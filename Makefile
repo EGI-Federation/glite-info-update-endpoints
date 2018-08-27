@@ -19,7 +19,10 @@ install:
 	@install -m 0644 etc/glite-info-update-endpoints.conf ${prefix}/etc/glite/
 	@install -m 0755 bin/glite-info-update-endpoints ${prefix}/usr/bin/
 	@install -m 0755 etc/cron.hourly/glite-info-update-endpoints ${prefix}/etc/cron.hourly/
-	@install -m 0644 doc/README $(prefix)/usr/share/doc/glite-info-update-endpoints
+	@install -m 0644 README.md $(prefix)/usr/share/doc/glite-info-update-endpoints/
+	@install -m 0644 AUTHORS $(prefix)/usr/share/doc/glite-info-update-endpoints/
+	@install -m 0644 COPYRIGHT $(prefix)/usr/share/doc/glite-info-update-endpoints/
+	@install -m 0644 LICENSE.txt $(prefix)/usr/share/doc/glite-info-update-endpoints/
 
 dist:
 	@mkdir -p  $(build)/$(NAME)-$(VERSION)/
