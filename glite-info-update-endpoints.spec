@@ -1,10 +1,10 @@
 Name:		glite-info-update-endpoints
-Version:	2.0.13
+Version:	2.0.14
 Release:	1%{?dist}
 Summary:	Updates LDAP endpoins for EGI and OSG
 Group:		Development/Libraries
 License:	ASL 2.0
-URL:		https://gridinfo-documentation.readthedocs.io/
+URL:		https://github.com/EGI-Foundation/glite-info-update-endpoints
 Source:		%{name}-%{version}.src.tgz
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
@@ -41,8 +41,16 @@ rm -rf %{buildroot}
 /etc/cron.hourly/glite-info-update-endpoints
 /var/cache/glite/glite-info-update-endpoints
 %doc /usr/share/doc/glite-info-update-endpoints/README
+%doc /usr/share/doc/glite-info-update-endpoints/AUTHORS
+%doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
+%doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
 %changelog
+
+* Mon Aug 27 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 2.0.14-1
+- Updated OSG URL (vokac)
+- Bug GitHub #1: Silent fail on CentOS 7 when not able to validate GOCDB certificate (vokac)
+- Update documetation and link to new GitHub repository (Baptiste Grenier)
 
 * Thu Aug 01 2013 Maria Alandes <maria.alandes.pradillo@cern.ch> - 2.0.13-1
 - Updated URL
