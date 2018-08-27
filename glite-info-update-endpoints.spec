@@ -50,7 +50,7 @@ rm -rf %{buildroot}
 * Mon Aug 27 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 2.0.14-1
 - Updated OSG URL (vokac)
 - Bug GitHub #1: Silent fail on CentOS 7 when not able to validate GOCDB certificate (vokac)
-- Update documetation and link to new GitHub repository (Baptiste Grenier)
+- Update build, documetation and link to new GitHub repository (Baptiste Grenier)
 
 * Thu Aug 01 2013 Maria Alandes <maria.alandes.pradillo@cern.ch> - 2.0.13-1
 - Updated URL
