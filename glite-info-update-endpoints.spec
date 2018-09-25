@@ -66,10 +66,10 @@ rm -rf %{buildroot}
 - BUG #96484: Fixed post install actions
 - BUG #97395: Fixed rpmlint errors
 
-* Mon May 25 2012 Laurence Field <laurence.field@cern.ch> - 2.0.10-1
+* Fri May 25 2012 Laurence Field <laurence.field@cern.ch> - 2.0.10-1
 - Changed the location of top-urls.conf to address GGUS #73823
 
-* Mon Apr 19 2012 Laurence Field <laurence.field@cern.ch> - 2.0.9-1
+* Thu Apr 19 2012 Laurence Field <laurence.field@cern.ch> - 2.0.9-1
 - Added random sleep to cronjob to address GGUS #81404 
 
 * Mon Mar 28 2011 Laurence Field <laurence.field@cern.ch> - 2.0.8-1
