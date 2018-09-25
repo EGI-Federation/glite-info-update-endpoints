@@ -18,6 +18,7 @@ A Makefile allowing to build source tarball and packages is provided.
 ### Building a RPM
 
 The required build dependencies are:
+
 - rpm-build
 - make
 - rsync
