@@ -1,42 +1,44 @@
 #!/usr/bin/python
 
-import os
-import sys
-import time
+import ConfigParser
 import getopt
 import logging
-import string
+import os
 import pickle
 import ssl
+import sys
+import time
 import urllib2
-import ConfigParser
 
 try:
     from xml.etree import ElementTree
-except ImportError: 
+except ImportError:
     from elementtree import ElementTree
 
 global log
 global config
+
 
 def setup_logging():
     """creates and returns stderr logger"""
     global log
 
     log = logging.getLogger()
-    hdlr = logging.StreamHandler() 
+    hdlr = logging.StreamHandler()
     form = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
     hdlr.setFormatter(form)
     log.addHandler(hdlr)
     log.setLevel(logging.WARN)
+
 
 def parse_args():
     """Parses the command line arguments"""
     global log
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "c:hv", ["config", "help", "verbose"])
-    except getopt.GetoptError, e:
+        opts, args = getopt.getopt(sys.argv[1:], "c:hv",
+                                   ["config", "help", "verbose"])
+    except getopt.GetoptError as e:
         log.error("While parsing arguments: %s." % str(e).strip())
         usage()
         sys.exit(1)
@@ -49,6 +51,7 @@ def parse_args():
         elif opt == "-v" or opt == "--verbose":
             log.setLevel(log.debug)
 
+
 def read_config(config_file):
     """Reads the configuration from the given file"""
     global config
@@ -57,44 +60,53 @@ def read_config(config_file):
     config_parser = ConfigParser.ConfigParser()
     try:
         config_parser.read(config_file)
-    except ConfigParser.ParsingError, e:
-        log.error("Configuration file '%s' contains errors." %(config_file))
+    except ConfigParser.ParsingError as e:
+        log.error("Configuration file '%s' contains errors." % config_file)
         log.error(str(e))
         sys.exit(1)
-    
+
     try:
         for parameter in ['EGI', 'OSG', 'manual']:
             try:
-                config[parameter] = config_parser.getboolean('configuration', parameter)
+                config[parameter] = config_parser.getboolean('configuration',
+                                                             parameter)
             except ValueError:
-                log.error("The value for parameter '%s' is not a boolean" %(parameter,))
+                log.error("The value for parameter '%s' is not a boolean"
+                          % parameter)
                 sys.exit(1)
-        for parameter in ['output_file', 'manual_file', 'cache_dir', 'certification_status']:
+        for parameter in ['output_file', 'manual_file', 'cache_dir',
+                          'certification_status']:
             config[parameter] = config_parser.get('configuration', parameter)
         for parameter in ['cafile', 'capath']:
             if config_parser.has_option('configuration', parameter):
-                config[parameter] = config_parser.get('configuration', parameter)
+                config[parameter] = config_parser.get('configuration',
+                                                      parameter)
             else:
                 config[parameter] = None
-    except ConfigParser.NoSectionError, e:
-        log.error("Missing section 'configuration' in the configuration file %s." %(config_file,))
+    except ConfigParser.NoSectionError as e:
+        log.error(("Missing section 'configuration' in"
+                  " the configuration file %s.")
+                  % config_file)
         sys.exit(1)
-    except ConfigParser.NoOptionError, e:
-        log.error("Missing parameter '%s' in the configuration file %s." %(parameter, config_file))
+    except ConfigParser.NoOptionError as e:
+        log.error("Missing parameter '%s' in the configuration file %s."
+                  % (parameter, config_file))
         sys.exit(1)
+
 
 def usage():
     """prints the command line options of the program"""
-    
-    print """
+
+    print("""
             Usage:""", os.path.basename(sys.argv[0]), """[options]
-            
+
             Options:
               -c --config  Configuration File
               -h --help    Display this help
               -v --verbose Run in verbose mode
 
-            """
+            """)
+
 
 def get_url_data(url):
     # python urllib2 introduced server certificate validation starting
@@ -104,7 +116,7 @@ def get_url_data(url):
     if hasattr(ssl, 'create_default_context'):
         capath = config.get('capath')
         cafile = config.get('cafile')
-        if capath != None or cafile != None:
+        if capath is not None or cafile is not None:
             context = ssl.create_default_context(cafile=cafile, capath=capath)
         else:
             context = ssl._create_unverified_context()
@@ -113,17 +125,21 @@ def get_url_data(url):
         # older python versions doesn't really verify server certificate
         return urllib2.urlopen(url).read()
 
+
 def get_osg_urls():
 
-    osg_goc_url = "https://my.opensciencegrid.org/rgsummary/xml?datasource=summary&summary_attrs_showwlcg=on&all_resources=on&gridtype=on&gridtype_1=on&active=on&active_value=1&disable_value=1"
+    osg_goc_url = ("https://my.opensciencegrid.org/rgsummary/xml"
+                   "?datasource=summary&summary_attrs_showwlcg=on&"
+                   "all_resources=on&gridtype=on&gridtype_1=on&active=on"
+                   "&active_value=1&disable_value=1")
 
     try:
         response = get_url_data(osg_goc_url)
-    except Exception, e:
-        log.error("unable to get list of OSG OIM sites: %s" % (str(e), ))
+    except Exception as e:
+        log.error("unable to get list of OSG OIM sites: %s" % str(e))
         return ""
 
-    root = ElementTree.XML(response) 
+    root = ElementTree.XML(response)
 
     osg_urls = {}
     seen_urls = []
@@ -133,7 +149,7 @@ def get_osg_urls():
         for element in resource_group.getchildren():
             if element.tag == 'GroupName':
                 site_name = element.text
-            if element.tag =='Resources':
+            if element.tag == 'Resources':
                 for resource in element.getchildren():
                     for attribute in resource.getchildren():
                         if attribute.tag == 'WLCGInformation':
@@ -143,34 +159,40 @@ def get_osg_urls():
                                         site_url = information.text
 
         if site_url:
-            if not site_url in seen_urls:
+            if site_url not in seen_urls:
                 osg_urls['OSG'].append((site_name, site_url))
                 seen_urls.append(site_url)
 
     return osg_urls
 
+
 def get_egi_urls(status):
 
-    egi_goc_url = "https://goc.egi.eu/gocdbpi/public/?method=get_site_list&certification_status=%s&production_status=Production" %(status,)
+    egi_goc_url = ("https://goc.egi.eu/gocdbpi/public/"
+                   "?method=get_site_list&certification_status=%s"
+                   "&production_status=Production") % status
 
     try:
         response = get_url_data(egi_goc_url)
-    except Exception, e:
-        log.error("unable to get GOCDB Production %s sites: %s" % (status, str(e)))
+    except Exception as e:
+        log.error("unable to get GOCDB Production %s sites: %s" % (status,
+                  str(e)))
         return ""
 
-    root = ElementTree.XML(response) 
+    root = ElementTree.XML(response)
     egi_urls = {}
     for node in root:
         if not node.attrib['ROC'] in egi_urls.keys():
             egi_urls[node.attrib['ROC']] = []
-        egi_urls[node.attrib['ROC']].append((node.attrib['NAME'], node.attrib['GIIS_URL']))
+        egi_urls[node.attrib['ROC']].append((node.attrib['NAME'],
+                                            node.attrib['GIIS_URL']))
 
     return egi_urls
 
+
 def create_urls_file(egi_urls, osg_urls):
 
-    now  = time.asctime()
+    now = time.asctime()
     header = """#
 # Top Level BDII configuration file
 # ---------------------------------
@@ -178,25 +200,26 @@ def create_urls_file(egi_urls, osg_urls):
 #
 # This file is generated, DO NOT EDIT it directly
 #
-""" % (now,)
+""" % now
 
     if not os.path.exists(os.path.dirname(config['output_file'])):
-        log.error("Output directory '%s' does not exist." % ( config['output_file'],) )
+        log.error("Output directory '%s' does not exist." %
+                  config['output_file'])
         sys.exit(1)
-        
+
     file_handle = open(config['output_file'] + ".tmp", 'w')
     file_handle.write(header)
 
     if egi_urls:
         for region in egi_urls:
-            file_handle.write("\n#\n# %s\n# -----------\n#\n" %(region))
+            file_handle.write("\n#\n# %s\n# -----------\n#\n" % region)
             for site in egi_urls[region]:
                 file_handle.write("\n#%s\n" % site[0])
                 file_handle.write("%s %s\n" % site)
 
     if osg_urls:
         for region in osg_urls:
-            file_handle.write("\n#\n# %s\n# -----------\n#\n" %(region))
+            file_handle.write("\n#\n# %s\n# -----------\n#\n" % region)
             for site in osg_urls[region]:
                 file_handle.write("\n#%s\n" % site[0])
                 file_handle.write("%s %s\n" % site)
@@ -207,12 +230,13 @@ def create_urls_file(egi_urls, osg_urls):
             file_handle.write("\n\n# Appended Manual Additions\n\n")
             file_handle.write(contents)
         else:
-            log.error("Manual URL file %s does not exist!" % (config['manual_file']))
+            log.error("Manual URL file %s does not exist!" %
+                      config['manual_file'])
             sys.exit(1)
 
-    
     file_handle.close()
     os.rename(config['output_file'] + ".tmp", config['output_file'])
+
 
 if __name__ == "__main__":
 
@@ -228,11 +252,11 @@ if __name__ == "__main__":
 
     egi_urls = None
     if config['EGI']:
-        if not config['certification_status'] in ["Candidate", "Uncertified", 
-                                                  "Certified", "Closed", 
+        if not config['certification_status'] in ["Candidate", "Uncertified",
+                                                  "Certified", "Closed",
                                                   "Suspended"]:
             message = "'%s' is not a valid certification_status." \
-                %(config['certification_status'],)
+                % config['certification_status']
             log.error(message)
             sys.exit(1)
         egi_urls = get_egi_urls(config['certification_status'])
@@ -242,7 +266,9 @@ if __name__ == "__main__":
             pickle.dump(egi_urls, file_handle)
             file_handle.close()
         else:
-            log.warn("EGI GOCDB could not be contacted or returned no information about EGI sites. Using cache file for EGI URLs.")
+            log.warn(("EGI GOCDB could not be contacted or returned no"
+                      " information about EGI sites."
+                      " Using cache file for EGI URLs."))
             file_handle = open(pickle_file, 'rb')
             egi_urls = pickle.load(file_handle)
             file_handle.close()
@@ -256,7 +282,9 @@ if __name__ == "__main__":
             pickle.dump(osg_urls, file_handle)
             file_handle.close()
         else:
-            log.warn("OSG GOCDB could not be contacted or returned no information about OSG sites. Using cache file for OSG URLs.")
+            log.warn(("OSG GOCDB could not be contacted or returned no"
+                      " information about OSG sites."
+                      " Using cache file for OSG URLs."))
             file_handle = open(pickle_file, 'rb')
             osg_urls = pickle.load(file_handle)
             file_handle.close()
