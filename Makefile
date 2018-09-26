@@ -5,7 +5,7 @@ build=$(shell pwd)/build
 DATE=$(shell date "+%a, %d %b %Y %T %z")
 dist=$(shell rpm --eval '%dist' | sed 's/%dist/.el5/')
 
-default: 
+default:
 	@echo "Nothing to do"
 
 install:
@@ -26,14 +26,11 @@ install:
 
 dist:
 	@mkdir -p  $(build)/$(NAME)-$(VERSION)/
-	rsync -HaS --exclude ".svn" --exclude "$(build)" * $(build)/$(NAME)-$(VERSION)/
+	rsync -aHS --exclude ".git" --exclude "$(build)" * $(build)/$(NAME)-$(VERSION)/
 	cd $(build); tar --gzip -cf $(NAME)-$(VERSION).src.tgz $(NAME)-$(VERSION)/; cd -
 
 sources: dist
 	cp $(build)/$(NAME)-$(VERSION).src.tgz .
-
-deb: dist
-	cd $(build)/$(NAME)-$(VERSION); dpkg-buildpackage -us -uc; cd -
 
 prepare: dist
 	@mkdir -p  $(build)/RPMS/noarch
@@ -42,15 +39,16 @@ prepare: dist
 	@mkdir -p  $(build)/SOURCES/
 	@mkdir -p  $(build)/BUILD/
 	cp $(build)/$(NAME)-$(VERSION).src.tgz $(build)/SOURCES 
+	cp $(NAME).spec $(build)/SPECS
 
 srpm: prepare
-	@rpmbuild -bs --define="dist ${dist}" --define='_topdir ${build}' $(NAME).spec 
+	@rpmbuild -bs --define="dist ${dist}" --define='_topdir ${build}' $(build)/SPECS/$(NAME).spec
 
 rpm: srpm
-	@rpmbuild --rebuild  --define='_topdir ${build} ' $(build)/SRPMS/$(NAME)-$(VERSION)-$(RELEASE)${dist}.src.rpm 
+	@rpmbuild --rebuild  --define='_topdir ${build}' $(build)/SRPMS/$(NAME)-$(VERSION)-$(RELEASE)${dist}.src.rpm
 
 clean:
 	rm -f *~ $(NAME)-$(VERSION).src.tgz
 	rm -rf $(build)
 
-.PHONY: dist srpm rpm sources clean 
+.PHONY: dist srpm rpm sources clean
