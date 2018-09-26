@@ -1,6 +1,6 @@
 # glite-info-update-endpoints
 
-This component is used with Top BDII and is intented to update LDAP endpoits for EGI and OSG.
+This component is used with Top BDII and is intented to update LDAP endpoits for EGI.
 BDII documentation is available here: https://gridinfo-documentation.readthedocs.io/
 
 glite-info-update-endpoints is a cron job that runs every hour to download
@@ -8,8 +8,8 @@ the list of site BDII URLs that are going to be used by the top level
 BDII to publish their resources.
 
 The script uses the /etc/glite/glite-info-update-endpoints.conf file which
-by default is configured to use the EGI and OSG list of site BDIIs.
-The list of site BDIIs is taken from the EGI and OSG GOCDBs.
+by default is configured to use EGI's list of site BDIIs.
+The list of site BDIIs is taken from the EGI GOCDBs.
 
 ## Building packages
 
@@ -35,23 +35,6 @@ cd /source && make rpm
 ```
 
 The RPM will be available into the `build/RPMS` directory.
-
-### Building a deb
-
-**This is _not working_ as there is no debian directory.**
-
-```sh
-# Checkout tag to be packaged
-git clone https://github.com/EGI-Foundation/glite-info-update-endpoints.git
-cd glite-info-update-endpoints
-git checkout X.X.X
-mkdir -p ~/debs/xenial
-# Building in a container using the source files
-docker run --rm -v $(pwd):/source -it ubuntu:xenial
-apt update
-apt install -y dpkg-dev make rsync
-cd /source && make deb
-```
 
 ## Installing from source
 

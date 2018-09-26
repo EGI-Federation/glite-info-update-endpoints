@@ -66,7 +66,7 @@ def read_config(config_file):
         sys.exit(1)
 
     try:
-        for parameter in ['EGI', 'OSG', 'manual']:
+        for parameter in ['EGI', 'manual']:
             try:
                 config[parameter] = config_parser.getboolean('configuration',
                                                              parameter)
@@ -126,46 +126,6 @@ def get_url_data(url):
         return urllib2.urlopen(url).read()
 
 
-def get_osg_urls():
-
-    osg_goc_url = ("https://my.opensciencegrid.org/rgsummary/xml"
-                   "?datasource=summary&summary_attrs_showwlcg=on&"
-                   "all_resources=on&gridtype=on&gridtype_1=on&active=on"
-                   "&active_value=1&disable_value=1")
-
-    try:
-        response = get_url_data(osg_goc_url)
-    except Exception as e:
-        log.error("unable to get list of OSG OIM sites: %s" % str(e))
-        return ""
-
-    root = ElementTree.XML(response)
-
-    osg_urls = {}
-    seen_urls = []
-    osg_urls['OSG'] = []
-    for resource_group in root.findall("ResourceGroup"):
-        site_url = None
-        for element in resource_group.getchildren():
-            if element.tag == 'GroupName':
-                site_name = element.text
-            if element.tag == 'Resources':
-                for resource in element.getchildren():
-                    for attribute in resource.getchildren():
-                        if attribute.tag == 'WLCGInformation':
-                            for information in attribute.getchildren():
-                                if information.tag == 'LDAPURL':
-                                    if information.text:
-                                        site_url = information.text
-
-        if site_url:
-            if site_url not in seen_urls:
-                osg_urls['OSG'].append((site_name, site_url))
-                seen_urls.append(site_url)
-
-    return osg_urls
-
-
 def get_egi_urls(status):
 
     egi_goc_url = ("https://goc.egi.eu/gocdbpi/public/"
@@ -190,7 +150,7 @@ def get_egi_urls(status):
     return egi_urls
 
 
-def create_urls_file(egi_urls, osg_urls):
+def create_urls_file(egi_urls):
 
     now = time.asctime()
     header = """#
@@ -214,13 +174,6 @@ def create_urls_file(egi_urls, osg_urls):
         for region in egi_urls:
             file_handle.write("\n#\n# %s\n# -----------\n#\n" % region)
             for site in egi_urls[region]:
-                file_handle.write("\n#%s\n" % site[0])
-                file_handle.write("%s %s\n" % site)
-
-    if osg_urls:
-        for region in osg_urls:
-            file_handle.write("\n#\n# %s\n# -----------\n#\n" % region)
-            for site in osg_urls[region]:
                 file_handle.write("\n#%s\n" % site[0])
                 file_handle.write("%s %s\n" % site)
 
@@ -273,20 +226,4 @@ if __name__ == "__main__":
             egi_urls = pickle.load(file_handle)
             file_handle.close()
 
-    osg_urls = None
-    if config['OSG']:
-        osg_urls = get_osg_urls()
-        pickle_file = config['cache_dir'] + '/' + 'OSG.pkl'
-        if osg_urls != "" and len(osg_urls['OSG']) > 0:
-            file_handle = open(pickle_file, 'wb')
-            pickle.dump(osg_urls, file_handle)
-            file_handle.close()
-        else:
-            log.warn(("OSG GOCDB could not be contacted or returned no"
-                      " information about OSG sites."
-                      " Using cache file for OSG URLs."))
-            file_handle = open(pickle_file, 'rb')
-            osg_urls = pickle.load(file_handle)
-            file_handle.close()
-
-    create_urls_file(egi_urls, osg_urls)
+    create_urls_file(egi_urls)
