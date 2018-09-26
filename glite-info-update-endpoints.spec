@@ -1,7 +1,7 @@
 Name:		glite-info-update-endpoints
-Version:	2.0.14
+Version:	3.0.0
 Release:	1%{?dist}
-Summary:	Updates LDAP endpoins for EGI and OSG
+Summary:	Updates LDAP endpoins for EGI
 Group:		Development/Libraries
 License:	ASL 2.0
 URL:		https://github.com/EGI-Foundation/glite-info-update-endpoints
@@ -10,7 +10,7 @@ BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %description
-Updates LDAP endpoins for EGI and OSG
+Updates LDAP endpoins for EGI
 
 %prep
 %setup -q
@@ -46,6 +46,10 @@ rm -rf %{buildroot}
 %doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
 %changelog
+
+* Wed Sep 26 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.0-1
+- Totally drop OSG support (Baptiste Grenier)
+- Test and build using Travis, fix sytle (Baptiste Grenier)
 
 * Mon Aug 27 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 2.0.14-1
 - Updated OSG URL (vokac)
