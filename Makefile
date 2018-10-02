@@ -38,7 +38,7 @@ prepare: dist
 	@mkdir -p  $(build)/SPECS/
 	@mkdir -p  $(build)/SOURCES/
 	@mkdir -p  $(build)/BUILD/
-	cp $(build)/$(NAME)-$(VERSION).src.tgz $(build)/SOURCES 
+	cp $(build)/$(NAME)-$(VERSION).src.tgz $(build)/SOURCES
 	cp $(NAME).spec $(build)/SPECS
 
 srpm: prepare
