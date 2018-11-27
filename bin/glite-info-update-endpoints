@@ -53,18 +53,27 @@ def parse_args():
 
 
 def read_config(config_file):
-    """Reads the configuration from the given file"""
+    """Configuration file reader
+
+
+    Reads the configuration from the given file
+
+    and asserts the correctness and logical consistency
+    of the content.
+    """
     global config
 
     config = {}
     config_parser = ConfigParser.ConfigParser()
+    # First, check whether the configuration file is corrupt overall
     try:
         config_parser.read(config_file)
     except ConfigParser.ParsingError as e:
         log.error("Configuration file '%s' contains errors." % config_file)
         log.error(str(e))
         sys.exit(1)
-
+    # Then, check for mandatory parameters.
+    # EGI and manual have to be set, else we can't continue
     try:
         for parameter in ['EGI', 'manual']:
             try:
@@ -74,7 +83,7 @@ def read_config(config_file):
                 log.error("The value for parameter '%s' is not a boolean"
                           % parameter)
                 sys.exit(1)
-        for parameter in ['output_file', 'manual_file', 'cache_dir',
+        for parameter in ['output_file', 'cache_dir',
                           'certification_status']:
             config[parameter] = config_parser.get('configuration', parameter)
         for parameter in ['cafile', 'capath']:
@@ -91,6 +100,14 @@ def read_config(config_file):
     except ConfigParser.NoOptionError as e:
         log.error("Missing parameter '%s' in the configuration file %s."
                   % (parameter, config_file))
+        sys.exit(1)
+    # If you do set manual = True , you're gonna need a manual_file
+    if config['manual']:
+        try:
+            config_parser.get('configuration', 'manual_file')
+        except ConfigParser.NoOptionError as e:
+            log.error("You have specified manual configuration, but no manual_file\
+                       in the %s configuration file" % config_file)
         sys.exit(1)
 
 
