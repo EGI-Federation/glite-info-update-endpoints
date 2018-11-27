@@ -101,11 +101,12 @@ def read_config(config_file):
     # If you do set manual = True , you're gonna need a manual_file
     if config['manual']:
         try:
-            config_parser.get('configuration','manual_file')
+            config_parser.get('configuration', 'manual_file')
         except ConfigParser.NoOptionError as e:
             log.error("You have specified manual configuration, but no manual_file\
                        in the %s configuration file" % config_file)
         sys.exit(1)
+
 
 def usage():
     """prints the command line options of the program"""
