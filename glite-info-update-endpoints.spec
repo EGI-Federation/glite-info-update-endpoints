@@ -1,5 +1,5 @@
 Name:		glite-info-update-endpoints
-Version:	3.0.0
+Version:	3.0.1
 Release:	1%{?dist}
 Summary:	Updates LDAP endpoins for EGI
 Group:		Development/Libraries
@@ -46,6 +46,9 @@ rm -rf %{buildroot}
 %doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
 %changelog
+
+* Tue Nov 27 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.1-1
+- Make manual_file optional in the conf (Bruce Becker)
 
 * Wed Sep 26 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.0-1
 - Totally drop OSG support (Baptiste Grenier)
