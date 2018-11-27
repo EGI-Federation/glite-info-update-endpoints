@@ -53,8 +53,11 @@ def parse_args():
 
 
 def read_config(config_file):
-    """
+    """Configuration file reader
+
+
     Reads the configuration from the given file
+
     and asserts the correctness and logical consistency
     of the content.
     """
