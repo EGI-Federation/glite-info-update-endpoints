@@ -15,6 +15,7 @@ before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - sudo apt update
+  - sudo apt install -y pylint
   - sudo apt install -y docker-ce
   - docker --version
 install:
@@ -28,6 +29,7 @@ script:
   - mdl -s relaxed README.md
   - rpmlint glite-info-update-endpoints.spec
   - flake8 bin/glite-info-update-endpoints
+  - pylint bin/glite-info-update-endpoints
   # Then, start the build container
   - docker run --name build_container -d -ti -v $PWD:/tmp -w /tmp $OS_NAME:$OS_MAJOR_VERSION /bin/bash -c 'while true ; do sleep 1000 ; done'
   # Now, install prerequisites for the build
