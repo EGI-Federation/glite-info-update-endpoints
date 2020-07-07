@@ -21,8 +21,8 @@ install:
   - wget http://archive.ubuntu.com/ubuntu/pool/universe/r/rpmlint/rpmlint_1.7-1_all.deb
   - sudo dpkg -i rpmlint_1.7-1_all.deb || sudo apt install -f -y
   - gem install mdl
-  - pip install requirements.txt
-  - pip install test-requirements.txt
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
 script:
   # First syntax, linting and pre-test stages
   - mdl -s relaxed README.md
