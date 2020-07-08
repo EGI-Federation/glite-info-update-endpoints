@@ -16,7 +16,6 @@ The list of site BDIIs is taken from the EGI GOCDBs.
 # invalid-name: module name is not appropriate
 # pylint: disable=invalid-name
 
-import ConfigParser
 import argparse
 import logging
 import os
@@ -25,6 +24,8 @@ import ssl
 import sys
 import time
 import urllib2
+
+from six.moves import configparser
 
 try:
     from xml.etree import ElementTree
@@ -48,11 +49,11 @@ def read_config(config_file):
     of the content.
     """
     config = {}
-    config_parser = ConfigParser.ConfigParser()
+    config_parser = configparser.ConfigParser()
     # First, check whether the configuration file is corrupt overall
     try:
         config_parser.read(config_file)
-    except ConfigParser.ParsingError as error:
+    except configparser.ParsingError as error:
         LOG.error("Configuration file '%s' contains errors.", config_file)
         LOG.error(str(error))
         sys.exit(1)
@@ -76,11 +77,11 @@ def read_config(config_file):
                                                       parameter)
             else:
                 config[parameter] = None
-    except ConfigParser.NoSectionError:
+    except configparser.NoSectionError:
         LOG.error(("Missing section 'configuration' in"
                    " the configuration file %s."), config_file)
         sys.exit(1)
-    except ConfigParser.NoOptionError:
+    except configparser.NoOptionError:
         LOG.error("Missing parameter '%s' in the configuration file %s.",
                   parameter, config_file)
         sys.exit(1)
@@ -89,7 +90,7 @@ def read_config(config_file):
         try:
             config['manual_file'] = config_parser.get('configuration',
                                                       'manual_file')
-        except ConfigParser.NoOptionError:
+        except configparser.NoOptionError:
             LOG.error("You have specified manual configuration, but no "
                       "manual_file in the %s configuration file", config_file)
             sys.exit(1)
