@@ -208,7 +208,7 @@ def main():
                                 config.get('capath'),
                                 config.get('cafile'))
         pickle_file = config['cache_dir'] + '/' + 'EGI.pkl'
-        if not egi_urls:
+        if egi_urls:
             file_handle = open(pickle_file, 'wb')
             pickle.dump(egi_urls, file_handle)
             file_handle.close()
