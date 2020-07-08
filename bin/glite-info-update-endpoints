@@ -18,7 +18,7 @@ The list of site BDIIs is taken from the EGI GOCDBs.
 # pylint: disable=global-statement, global-at-module-level, invalid-name
 
 import ConfigParser
-import getopt
+import argparse
 import logging
 import os
 import pickle
@@ -40,25 +40,6 @@ def setup_logging():
     """creates and returns stderr logger"""
     logging.basicConfig(format="%(asctime)s %(levelname)-8s %(message)s",
                         level=logging.WARN)
-
-
-def parse_args():
-    """Parses the command line arguments"""
-    try:
-        opts, dummy = getopt.getopt(sys.argv[1:], "c:hv",
-                                    ["config", "help", "verbose"])
-    except getopt.GetoptError as error:
-        LOG.error("While parsing arguments: %s.", str(error).strip())
-        usage()
-        sys.exit(1)
-    for opt, arg in opts:
-        if opt == "-c" or opt == "--config":
-            read_config(arg)
-        elif opt == "-h" or opt == "--help":
-            usage()
-            sys.exit()
-        elif opt == "-v" or opt == "--verbose":
-            LOG.setLevel(logging.DEBUG)
 
 
 def read_config(config_file):
@@ -116,19 +97,6 @@ def read_config(config_file):
             LOG.error("You have specified manual configuration, but no "
                       "manual_file in the %s configuration file", config_file)
             sys.exit(1)
-
-
-def usage():
-    """prints the command line options of the program"""
-    print("""
-            Usage:""", os.path.basename(sys.argv[0]), """[options]
-
-            Options:
-              -c --config  Configuration File
-              -h --help    Display this help
-              -v --verbose Run in verbose mode
-
-            """)
 
 
 def get_url_data(url):
@@ -220,13 +188,16 @@ def create_urls_file(egi_urls):
 if __name__ == "__main__":
     global CONFIG
     setup_logging()
-    CONFIG = None
-    parse_args()
 
-    if not CONFIG:
-        LOG.error("No configuration file given.")
-        usage()
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--config", required=True,
+                        help="Configuration file", )
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="Run in verbose mode")
+    args = parser.parse_args()
+    if args.verbose:
+        LOG.setLevel(logging.DEBUG)
+    read_config(args.config)
 
     EGI_URLS = None
     if CONFIG.get('EGI'):
