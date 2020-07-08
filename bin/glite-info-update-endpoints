@@ -226,7 +226,6 @@ def create_urls_file(egi_urls):
 
 
 if __name__ == "__main__":
-    global CONFIG
     setup_logging()
     CONFIG = None
     parse_args()
