@@ -247,7 +247,7 @@ if __name__ == "__main__":
             sys.exit(1)
         EGI_URLS = get_egi_urls(CONFIG['certification_status'])
         PICKLE_FILE = CONFIG['cache_dir'] + '/' + 'EGI.pkl'
-        if not EGI_URLS:
+        if EGI_URLS:
             FILE_HANDLE = open(PICKLE_FILE, 'wb')
             pickle.dump(EGI_URLS, FILE_HANDLE)
             FILE_HANDLE.close()
