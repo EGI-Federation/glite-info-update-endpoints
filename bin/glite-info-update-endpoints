@@ -32,26 +32,18 @@ try:
 except ImportError:
     from elementtree import ElementTree
 
-LOG = None
+LOG = logging.getLogger()
 CONFIG = None
 
 
 def setup_logging():
     """creates and returns stderr logger"""
-    global LOG
-
-    LOG = logging.getLogger()
-    hdlr = logging.StreamHandler()
-    form = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
-    hdlr.setFormatter(form)
-    LOG.addHandler(hdlr)
-    LOG.setLevel(logging.WARN)
+    logging.basicConfig(format="%(asctime)s %(levelname)-8s %(message)s",
+                        level=logging.WARN)
 
 
 def parse_args():
     """Parses the command line arguments"""
-    global LOG
-
     try:
         opts, dummy = getopt.getopt(sys.argv[1:], "c:hv",
                                     ["config", "help", "verbose"])
@@ -66,7 +58,7 @@ def parse_args():
             usage()
             sys.exit()
         elif opt == "-v" or opt == "--verbose":
-            LOG.setLevel(LOG.debug)
+            LOG.setLevel(logging.DEBUG)
 
 
 def read_config(config_file):
