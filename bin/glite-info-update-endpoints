@@ -185,7 +185,8 @@ def create_urls_file(egi_urls):
     os.rename(CONFIG['output_file'] + ".tmp", CONFIG['output_file'])
 
 
-if __name__ == "__main__":
+def main():
+    """main entry point"""
     global CONFIG
     setup_logging()
 
@@ -223,3 +224,7 @@ if __name__ == "__main__":
             FILE_HANDLE.close()
 
     create_urls_file(EGI_URLS)
+
+
+if __name__ == "__main__":
+    main()
