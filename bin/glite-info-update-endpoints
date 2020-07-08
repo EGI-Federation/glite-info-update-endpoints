@@ -23,8 +23,8 @@ import pickle
 import ssl
 import sys
 import time
-import urllib2
 
+import requests
 from six.moves import configparser
 
 try:
@@ -97,24 +97,6 @@ def read_config(config_file):
     return config
 
 
-def get_url_data(url, capath, cafile):
-    """Retrieve the content of a resource at a specific URL"""
-    # python urllib2 introduced server certificate validation starting
-    # with version 2.7.9 and 3.4 (backported also e.g. to CentOS7). It
-    # is no longer possible to download HTTPS data without having server
-    # CA certificate in trusted store or explicitely disable verification.
-    if hasattr(ssl, 'create_default_context'):
-        # pylint: disable=protected-access
-        if capath is not None or cafile is not None:
-            context = ssl.create_default_context(cafile=cafile, capath=capath)
-        else:
-            context = ssl._create_unverified_context()
-        return urllib2.urlopen(url, context=context).read()
-    else:
-        # older python versions doesn't really verify server certificate
-        return urllib2.urlopen(url).read()
-
-
 def get_egi_urls(status, capath, cafile):
     """Retrieve production sites from GOCDB"""
     egi_goc_url = ("https://goc.egi.eu/gocdbpi/public/"
@@ -122,21 +104,24 @@ def get_egi_urls(status, capath, cafile):
                    "&production_status=Production") % status
 
     try:
-        response = get_url_data(egi_goc_url, capath, cafile)
-    # pylint: disable=broad-except
-    except Exception as error:
+        verify = True
+        if capath:
+            verify = capath
+        elif cafile:
+            verify = cafile
+        response = requests.get(egi_goc_url, verify=verify)
+    except requests.exceptions.RequestException as error:
         LOG.error("unable to get GOCDB Production %s sites: %s", status,
                   str(error))
-        return ""
+        return None
 
-    root = ElementTree.XML(response)
+    root = ElementTree.XML(response.text)
     egi_urls = {}
     for node in root:
         if not node.attrib['ROC'] in egi_urls.keys():
             egi_urls[node.attrib['ROC']] = []
         egi_urls[node.attrib['ROC']].append((node.attrib['NAME'],
                                              node.attrib['GIIS_URL']))
-
     return egi_urls
 
 
