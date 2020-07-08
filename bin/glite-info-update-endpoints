@@ -13,9 +13,8 @@ by default is configured to use EGI's list of site BDIIs.
 The list of site BDIIs is taken from the EGI GOCDBs.
 """
 
-# global-*: global usage should be fixed by using a class
 # invalid-name: module name is not appropriate
-# pylint: disable=global-statement, global-at-module-level, invalid-name
+# pylint: disable=invalid-name
 
 import ConfigParser
 import argparse
@@ -33,7 +32,6 @@ except ImportError:
     from elementtree import ElementTree
 
 LOG = logging.getLogger()
-CONFIG = None
 
 
 def setup_logging():
@@ -49,9 +47,7 @@ def read_config(config_file):
     and asserts the correctness and logical consistency
     of the content.
     """
-    global CONFIG
-
-    CONFIG = {}
+    config = {}
     config_parser = ConfigParser.ConfigParser()
     # First, check whether the configuration file is corrupt overall
     try:
@@ -65,7 +61,7 @@ def read_config(config_file):
     try:
         for parameter in ['EGI', 'manual']:
             try:
-                CONFIG[parameter] = config_parser.getboolean('configuration',
+                config[parameter] = config_parser.getboolean('configuration',
                                                              parameter)
             except ValueError:
                 LOG.error("The value for parameter '%s' is not a boolean",
@@ -73,13 +69,13 @@ def read_config(config_file):
                 sys.exit(1)
         for parameter in ['output_file', 'cache_dir',
                           'certification_status']:
-            CONFIG[parameter] = config_parser.get('configuration', parameter)
+            config[parameter] = config_parser.get('configuration', parameter)
         for parameter in ['cafile', 'capath']:
             if config_parser.has_option('configuration', parameter):
-                CONFIG[parameter] = config_parser.get('configuration',
+                config[parameter] = config_parser.get('configuration',
                                                       parameter)
             else:
-                CONFIG[parameter] = None
+                config[parameter] = None
     except ConfigParser.NoSectionError:
         LOG.error(("Missing section 'configuration' in"
                    " the configuration file %s."), config_file)
@@ -89,25 +85,24 @@ def read_config(config_file):
                   parameter, config_file)
         sys.exit(1)
     # If you do set manual = True , you're gonna need a manual_file
-    if CONFIG['manual']:
+    if config['manual']:
         try:
-            CONFIG['manual_file'] = config_parser.get('configuration',
+            config['manual_file'] = config_parser.get('configuration',
                                                       'manual_file')
         except ConfigParser.NoOptionError:
             LOG.error("You have specified manual configuration, but no "
                       "manual_file in the %s configuration file", config_file)
             sys.exit(1)
+    return config
 
 
-def get_url_data(url):
+def get_url_data(url, capath, cafile):
     """Retrieve the content of a resource at a specific URL"""
     # python urllib2 introduced server certificate validation starting
     # with version 2.7.9 and 3.4 (backported also e.g. to CentOS7). It
     # is no longer possible to download HTTPS data without having server
     # CA certificate in trusted store or explicitely disable verification.
     if hasattr(ssl, 'create_default_context'):
-        capath = CONFIG.get('capath')
-        cafile = CONFIG.get('cafile')
         # pylint: disable=protected-access
         if capath is not None or cafile is not None:
             context = ssl.create_default_context(cafile=cafile, capath=capath)
@@ -119,14 +114,14 @@ def get_url_data(url):
         return urllib2.urlopen(url).read()
 
 
-def get_egi_urls(status):
+def get_egi_urls(status, capath, cafile):
     """Retrieve production sites from GOCDB"""
     egi_goc_url = ("https://goc.egi.eu/gocdbpi/public/"
                    "?method=get_site_list&certification_status=%s"
                    "&production_status=Production") % status
 
     try:
-        response = get_url_data(egi_goc_url)
+        response = get_url_data(egi_goc_url, capath, cafile)
     # pylint: disable=broad-except
     except Exception as error:
         LOG.error("unable to get GOCDB Production %s sites: %s", status,
@@ -144,7 +139,7 @@ def get_egi_urls(status):
     return egi_urls
 
 
-def create_urls_file(egi_urls):
+def create_urls_file(egi_urls, config):
     """Create the Top Level BDII configuration file"""
     now = time.asctime()
     header = """#
@@ -156,12 +151,12 @@ def create_urls_file(egi_urls):
 #
 """ % now
 
-    if not os.path.exists(os.path.dirname(CONFIG['output_file'])):
+    if not os.path.exists(os.path.dirname(config['output_file'])):
         LOG.error("Output directory '%s' does not exist.",
-                  CONFIG['output_file'])
+                  config['output_file'])
         sys.exit(1)
 
-    file_handle = open(CONFIG['output_file'] + ".tmp", 'w')
+    file_handle = open(config['output_file'] + ".tmp", 'w')
     file_handle.write(header)
 
     if egi_urls:
@@ -171,23 +166,22 @@ def create_urls_file(egi_urls):
                 file_handle.write("\n#%s\n" % site[0])
                 file_handle.write("%s %s\n" % site)
 
-    if CONFIG['manual']:
-        if os.path.exists(CONFIG['manual_file']):
-            contents = open(CONFIG['manual_file']).read()
+    if config['manual']:
+        if os.path.exists(config['manual_file']):
+            contents = open(config['manual_file']).read()
             file_handle.write("\n\n# Appended Manual Additions\n\n")
             file_handle.write(contents)
         else:
             LOG.error("Manual URL file %s does not exist!",
-                      CONFIG['manual_file'])
+                      config['manual_file'])
             sys.exit(1)
 
     file_handle.close()
-    os.rename(CONFIG['output_file'] + ".tmp", CONFIG['output_file'])
+    os.rename(config['output_file'] + ".tmp", config['output_file'])
 
 
 def main():
     """main entry point"""
-    global CONFIG
     setup_logging()
 
     parser = argparse.ArgumentParser()
@@ -198,32 +192,34 @@ def main():
     args = parser.parse_args()
     if args.verbose:
         LOG.setLevel(logging.DEBUG)
-    read_config(args.config)
+    config = read_config(args.config)
 
-    EGI_URLS = None
-    if CONFIG.get('EGI'):
-        if not CONFIG['certification_status'] in ["Candidate", "Uncertified",
+    egi_urls = None
+    if config.get('EGI'):
+        if not config['certification_status'] in ["Candidate", "Uncertified",
                                                   "Certified", "Closed",
                                                   "Suspended"]:
-            MESSAGE = "'%s' is not a valid certification_status." \
-                % CONFIG['certification_status']
-            LOG.error(MESSAGE)
+            msg = "'%s' is not a valid certification_status." \
+                  % config['certification_status']
+            LOG.error(msg)
             sys.exit(1)
-        EGI_URLS = get_egi_urls(CONFIG['certification_status'])
-        PICKLE_FILE = CONFIG['cache_dir'] + '/' + 'EGI.pkl'
-        if not EGI_URLS:
-            FILE_HANDLE = open(PICKLE_FILE, 'wb')
-            pickle.dump(EGI_URLS, FILE_HANDLE)
-            FILE_HANDLE.close()
+        egi_urls = get_egi_urls(config['certification_status'],
+                                config.get('capath'),
+                                config.get('cafile'))
+        pickle_file = config['cache_dir'] + '/' + 'EGI.pkl'
+        if not egi_urls:
+            file_handle = open(pickle_file, 'wb')
+            pickle.dump(egi_urls, file_handle)
+            file_handle.close()
         else:
             LOG.warn(("EGI GOCDB could not be contacted or returned no"
                       " information about EGI sites."
                       " Using cache file for EGI URLs."))
-            FILE_HANDLE = open(PICKLE_FILE, 'rb')
-            EGI_URLS = pickle.load(FILE_HANDLE)
-            FILE_HANDLE.close()
+            file_handle = open(pickle_file, 'rb')
+            egi_urls = pickle.load(file_handle)
+            file_handle.close()
 
-    create_urls_file(EGI_URLS)
+    create_urls_file(egi_urls, config)
 
 
 if __name__ == "__main__":
