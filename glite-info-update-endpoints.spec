@@ -1,13 +1,13 @@
-Name:		glite-info-update-endpoints
-Version:	3.0.1
-Release:	1%{?dist}
-Summary:	Updates LDAP endpoins for EGI
-Group:		Development/Libraries
-License:	ASL 2.0
-URL:		https://github.com/EGI-Foundation/glite-info-update-endpoints
-Source:		%{name}-%{version}.src.tgz
-BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
+Name:           glite-info-update-endpoints
+Version:        3.0.1
+Release:        1%{?dist}
+Summary:        Updates LDAP endpoins for EGI
+Group:          Development/Libraries
+License:        ASL 2.0
+URL:            https://github.com/EGI-Foundation/glite-info-update-endpoints
+Source:         %{name}-%{version}.src.tgz
+BuildArch:      noarch
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-setuptools
 Requires:       python-setuptools
 Requires:       python-requests
@@ -44,7 +44,7 @@ rm -rf %{buildroot}
 /usr/bin/glite-info-update-endpoints
 /etc/cron.hourly/glite-info-update-endpoints
 /var/cache/glite/glite-info-update-endpoints
-/usr/lib/python2.7/site-packages/
+%{python_sitelib}
 %doc /usr/share/doc/glite-info-update-endpoints/README.md
 %doc /usr/share/doc/glite-info-update-endpoints/AUTHORS
 %doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
