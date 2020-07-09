@@ -98,7 +98,7 @@ def get_egi_urls(status, capath, cafile):
     """Retrieve production sites from GOCDB"""
     if status not in ["Candidate", "Uncertified", "Certified",
                       "Closed", "Suspended"]:
-        LOG.error("'%s' is not a valid certification_status." % status)
+        LOG.error("'%s' is not a valid certification_status.", status)
         sys.exit(1)
 
     egi_goc_url = ("https://goc.egi.eu/gocdbpi/public/"
@@ -138,9 +138,9 @@ def create_urls_file(output_file, egi_urls, manual, manual_file):
 #
 """ % now
 
-    LOG.debug("Writing urls file at %s" % output_file)
+    LOG.debug("Writing urls file at %s", output_file)
     if not os.path.exists(os.path.dirname(output_file)):
-        LOG.error("Output directory '%s' does not exist." % output_file)
+        LOG.error("Output directory '%s' does not exist.", output_file)
         sys.exit(1)
 
     with open(output_file + ".tmp", "w") as temp:
@@ -153,9 +153,9 @@ def create_urls_file(output_file, egi_urls, manual, manual_file):
                     temp.write("%s %s\n" % site)
         if manual:
             if os.path.exists(manual_file):
-                with open(manual_file) as mf:
+                with open(manual_file) as mfh:
                     temp.write("\n\n# Appended Manual Additions\n\n")
-                    temp.write(mf.read())
+                    temp.write(mfh.read())
             else:
                 LOG.error("Manual URL file %s does not exist!",
                           manual_file)
@@ -184,18 +184,18 @@ def main():
                                 config.get('cafile'))
         pickle_file = config['cache_dir'] + '/' + 'EGI.pkl'
         if egi_urls:
-            LOG.debug("Dumping EGI URLs on cache file %s" % pickle_file)
-            with open(pickle_file, 'wb') as f:
-                pickle.dump(egi_urls, f)
+            LOG.debug("Dumping EGI URLs on cache file %s", pickle_file)
+            with open(pickle_file, 'wb') as pfh:
+                pickle.dump(egi_urls, pfh)
         else:
             LOG.warning(("EGI GOCDB could not be contacted or returned no"
                          " information about EGI sites."
                          " Using cache file for EGI URLs."))
             try:
-                with open(pickle_file, 'rb') as f:
-                    egi_urls = pickle.load(f)
-            except OSError as e:
-                LOG.warning("Issue opening cache file for EGI URLs: %s" % e)
+                with open(pickle_file, 'rb') as pfh:
+                    egi_urls = pickle.load(pfh)
+            except OSError as error:
+                LOG.warning("Issue opening cache file for EGI URLs: %s", error)
 
     create_urls_file(config['output_file'], egi_urls, config['manual'],
                      config.get('manual_file'))
