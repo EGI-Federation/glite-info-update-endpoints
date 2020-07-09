@@ -21,6 +21,7 @@ import sys
 import time
 
 import requests
+
 from six.moves import configparser
 
 try:
@@ -95,7 +96,7 @@ def read_config(config_file):
 
 def get_egi_urls(status, capath, cafile):
     """Retrieve production sites from GOCDB"""
-    if not status in ["Candidate", "Uncertified", "Certified",
+    if status not in ["Candidate", "Uncertified", "Certified",
                       "Closed", "Suspended"]:
         LOG.error("'%s' is not a valid certification_status." % status)
         sys.exit(1)
@@ -196,7 +197,8 @@ def main():
             except OSError as e:
                 LOG.warning("Issue opening cache file for EGI URLs: %s" % e)
 
-    create_urls_file(config['output_file'], egi_urls, config['manual'], config.get('manual_file'))
+    create_urls_file(config['output_file'], egi_urls, config['manual'],
+                     config.get('manual_file'))
 
 
 if __name__ == "__main__":
