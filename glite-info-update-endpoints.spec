@@ -8,6 +8,8 @@ URL:		https://github.com/EGI-Foundation/glite-info-update-endpoints
 Source:		%{name}-%{version}.src.tgz
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
+Requires:       python-requests
+Requires:       python-six
 
 %description
 Updates LDAP endpoins for EGI
