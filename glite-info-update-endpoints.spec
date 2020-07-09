@@ -1,3 +1,8 @@
+%if 0%{?el8}
+%global __python %{python3}
+%global python_prefix 3
+%endif
+
 Name:           glite-info-update-endpoints
 Version:        3.0.1
 Release:        1%{?dist}
@@ -8,13 +13,15 @@ URL:            https://github.com/EGI-Foundation/glite-info-update-endpoints
 Source:         %{name}-%{version}.src.tgz
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-BuildRequires:  python-setuptools
-Requires:       python-setuptools
-Requires:       python-requests
-Requires:       python-six
+BuildRequires:  python%{python_prefix}
+BuildRequires:  python%{python_prefix}-setuptools
+Requires:       python%{python_prefix}-setuptools
+Requires:       python%{python_prefix}-requests
+Requires:       python%{python_prefix}-six
 %if 0%{?el6}
 Requires:       python-argparse
 %endif
+
 
 %description
 Updates LDAP endpoins for EGI
