@@ -12,6 +12,9 @@ BuildRequires:  python-setuptools
 Requires:       python-setuptools
 Requires:       python-requests
 Requires:       python-six
+%if 0%{?el6}
+Requires:       python-argparse
+%endif
 
 %description
 Updates LDAP endpoins for EGI
