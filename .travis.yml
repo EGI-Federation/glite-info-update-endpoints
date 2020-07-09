@@ -35,7 +35,7 @@ script:
   # Now, install prerequisites for the build
   - docker exec -i -w /root build_container yum install -y rpm-build make rsync yum-utils
   # Eventually build the rpm
-  - docker exec -i -w /tmp build_container yum-builddep glite-info-update-endpoints.spec
+  - docker exec -i -w /tmp build_container yum-builddep -y glite-info-update-endpoints.spec
   - docker exec -i -w /tmp build_container make rpm
   # and install it
   - docker exec -i -w /tmp/build/RPMS/noarch build_container bash -c "rpm -Uvh glite-info-update-endpoints*.el${OS_MAJOR_VERSION}.noarch.rpm"
