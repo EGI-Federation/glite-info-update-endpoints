@@ -13,14 +13,10 @@ by default is configured to use EGI's list of site BDIIs.
 The list of site BDIIs is taken from the EGI GOCDBs.
 """
 
-# invalid-name: module name is not appropriate
-# pylint: disable=invalid-name
-
 import argparse
 import logging
 import os
 import pickle
-import ssl
 import sys
 import time
 
@@ -99,12 +95,9 @@ def read_config(config_file):
 
 def get_egi_urls(status, capath, cafile):
     """Retrieve production sites from GOCDB"""
-    if not config['certification_status'] in ["Candidate", "Uncertified",
-                                              "Certified", "Closed",
-                                              "Suspended"]:
-        msg = "'%s' is not a valid certification_status." \
-              % config['certification_status']
-        LOG.error(msg)
+    if not status in ["Candidate", "Uncertified", "Certified",
+                      "Closed", "Suspended"]:
+        LOG.error("'%s' is not a valid certification_status." % status)
         sys.exit(1)
 
     egi_goc_url = ("https://goc.egi.eu/gocdbpi/public/"
@@ -121,6 +114,7 @@ def get_egi_urls(status, capath, cafile):
         LOG.error("unable to get GOCDB Production %s sites: %s", status,
                   str(error))
         return None
+
     root = ElementTree.XML(response.text)
     egi_urls = {}
     for node in root:
@@ -131,16 +125,10 @@ def get_egi_urls(status, capath, cafile):
     return egi_urls
 
 
-def create_urls_file(egi_urls, config):
+def create_urls_file(output_file, egi_urls, manual, manual_file):
     """Create the Top Level BDII configuration file"""
-    dest_dir = os.path.dirname(config["output_file"])
-    if not os.path.exists(dir_name)):
-        LOG.error("Output directory '%s' does not exist.", dirname)
-        sys.exit(1)
-
-    with tempfile.NamedTemporaryFile(dir=dest_dir) as tf:
-        now = time.asctime()
-        header = """#
+    now = time.asctime()
+    header = """#
 # Top Level BDII configuration file
 # ---------------------------------
 # created on %s
@@ -148,28 +136,30 @@ def create_urls_file(egi_urls, config):
 # This file is generated, DO NOT EDIT it directly
 #
 """ % now
-        tf.write(header)
+
+    LOG.debug("Writing urls file at %s" % output_file)
+    if not os.path.exists(os.path.dirname(output_file)):
+        LOG.error("Output directory '%s' does not exist." % output_file)
+        sys.exit(1)
+
+    with open(output_file + ".tmp", "w") as temp:
+        temp.write(header)
         if egi_urls:
             for region in egi_urls:
-                tf.write("\n#\n# %s\n# -----------\n#\n" % region)
+                temp.write("\n#\n# %s\n# -----------\n#\n" % region)
                 for site in egi_urls[region]:
-                    tf.write("\n#%s\n" % site[0])
-                    tf.write("%s %s\n" % site)
-        if config['manual']:
-            if os.path.exists(config['manual_file']):
-                contents = open(config['manual_file']).read()
-                tf.write("\n\n# Appended Manual Additions\n\n")
-                tf.write(contents)
+                    temp.write("\n#%s\n" % site[0])
+                    temp.write("%s %s\n" % site)
+        if manual:
+            if os.path.exists(manual_file):
+                with open(manual_file) as mf:
+                    temp.write("\n\n# Appended Manual Additions\n\n")
+                    temp.write(mf.read())
             else:
                 LOG.error("Manual URL file %s does not exist!",
-                          config['manual_file'])
+                          manual_file)
                 sys.exit(1)
-
-        tf.flush()
-        os.rename(tf.name, config['output_file'])
-
-
-def get_egi_urls
+    os.rename(output_file + ".tmp", output_file)
 
 
 def main():
@@ -180,39 +170,33 @@ def main():
     parser.add_argument("-c", "--config", required=True,
                         help="Configuration file", )
     parser.add_argument("-v", "--verbose", action="store_true",
-                            help="Run in verbose mode")
+                        help="Run in verbose mode")
     args = parser.parse_args()
     if args.verbose:
         LOG.setLevel(logging.DEBUG)
     config = read_config(args.config)
 
-    create_urls_file(config)
     egi_urls = None
     if config.get('EGI'):
-        if not config['certification_status'] in ["Candidate", "Uncertified",
-                                                  "Certified", "Closed",
-                                                  "Suspended"]:
-            msg = "'%s' is not a valid certification_status." \
-                  % config['certification_status']
-            LOG.error(msg)
-            sys.exit(1)
         egi_urls = get_egi_urls(config['certification_status'],
                                 config.get('capath'),
                                 config.get('cafile'))
         pickle_file = config['cache_dir'] + '/' + 'EGI.pkl'
         if egi_urls:
-            file_handle = open(pickle_file, 'wb')
-            pickle.dump(egi_urls, file_handle)
-            file_handle.close()
+            LOG.debug("Dumping EGI URLs on cache file %s" % pickle_file)
+            with open(pickle_file, 'wb') as f:
+                pickle.dump(egi_urls, f)
         else:
-            LOG.warn(("EGI GOCDB could not be contacted or returned no"
-                      " information about EGI sites."
-                      " Using cache file for EGI URLs."))
-            file_handle = open(pickle_file, 'rb')
-            egi_urls = pickle.load(file_handle)
-            file_handle.close()
+            LOG.warning(("EGI GOCDB could not be contacted or returned no"
+                         " information about EGI sites."
+                         " Using cache file for EGI URLs."))
+            try:
+                with open(pickle_file, 'rb') as f:
+                    egi_urls = pickle.load(f)
+            except OSError as e:
+                LOG.warning("Issue opening cache file for EGI URLs: %s" % e)
 
-    create_urls_file(egi_urls, config)
+    create_urls_file(config['output_file'], egi_urls, config['manual'], config.get('manual_file'))
 
 
 if __name__ == "__main__":

@@ -8,6 +8,8 @@ URL:		https://github.com/EGI-Foundation/glite-info-update-endpoints
 Source:		%{name}-%{version}.src.tgz
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
+BuildRequires:  python-setuptools
+Requires:       python-setuptools
 Requires:       python-requests
 Requires:       python-six
 
@@ -42,6 +44,7 @@ rm -rf %{buildroot}
 /usr/bin/glite-info-update-endpoints
 /etc/cron.hourly/glite-info-update-endpoints
 /var/cache/glite/glite-info-update-endpoints
+/usr/lib/python2.7/site-packages/
 %doc /usr/share/doc/glite-info-update-endpoints/README.md
 %doc /usr/share/doc/glite-info-update-endpoints/AUTHORS
 %doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
