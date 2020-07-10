@@ -28,8 +28,8 @@ script:
   # First syntax, linting and pre-test stages
   - mdl -s relaxed README.md
   - rpmlint glite-info-update-endpoints.spec
-  - flake8 glite_info_update_endpoints.py
-  - pylint glite_info_update_endpoints.py
+  - flake8 glite_info_update_endpoints/
+  - pylint glite_info_update_endpoints/
   # Then, start the build container
   - docker run --name build_container -d -ti -v $PWD:/tmp -w /tmp $OS_NAME:$OS_MAJOR_VERSION /bin/bash -c 'while true ; do sleep 1000 ; done'
   # Now, install prerequisites for the build
