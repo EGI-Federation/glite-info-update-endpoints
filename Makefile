@@ -4,6 +4,7 @@ RELEASE= $(shell grep Release: *.spec |cut -d"%" -f1 |sed 's/^[^:]*:[^0-9]*//')
 build=$(shell pwd)/build
 DATE=$(shell date "+%a, %d %b %Y %T %z")
 dist=$(shell rpm --eval '%dist' | sed 's/%dist/.el5/')
+python ?= python
 
 default:
 	@echo "Nothing to do"
@@ -16,7 +17,7 @@ install:
 	@mkdir -p ${prefix}/var/log/glite
 	@mkdir -p ${prefix}/var/cache/glite/glite-info-update-endpoints
 	@mkdir -p $(prefix)/usr/share/doc/glite-info-update-endpoints
-	python setup.py install --root ${prefix}/
+	${python} setup.py install --root ${prefix}/
 	@install -m 0644 etc/glite-info-update-endpoints.conf ${prefix}/etc/glite/
 	@install -m 0755 etc/cron.hourly/glite-info-update-endpoints ${prefix}/etc/cron.hourly/
 	@install -m 0644 README.md $(prefix)/usr/share/doc/glite-info-update-endpoints/

@@ -1,6 +1,6 @@
 %if 0%{?el8}
-%global __python %{python3}
-%global python_prefix 3
+%global __python %{__python3}
+%global python_version_prefix 3
 %endif
 
 Name:           glite-info-update-endpoints
@@ -13,11 +13,11 @@ URL:            https://github.com/EGI-Foundation/glite-info-update-endpoints
 Source:         %{name}-%{version}.src.tgz
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-BuildRequires:  python%{python_prefix}
-BuildRequires:  python%{python_prefix}-setuptools
-Requires:       python%{python_prefix}-setuptools
-Requires:       python%{python_prefix}-requests
-Requires:       python%{python_prefix}-six
+BuildRequires:  python%{?python_version_prefix}
+BuildRequires:  python%{?python_version_prefix}-setuptools
+Requires:       python%{?python_version_prefix}-setuptools
+Requires:       python%{?python_version_prefix}-requests
+Requires:       python%{?python_version_prefix}-six
 %if 0%{?el6}
 Requires:       python-argparse
 %endif
@@ -34,7 +34,7 @@ Updates LDAP endpoins for EGI
 
 %install
 rm -rf %{buildroot}
-make install prefix=%{buildroot}
+make install python=python%{?python_version_prefix} prefix=%{buildroot}
 
 %post
 if [ ! -f /var/cache/glite/top-urls.conf ]; then
@@ -46,22 +46,23 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir /etc/glite/
-%dir /var/log/glite/
-%dir /var/cache/glite/
+%dir /etc/glite
+%dir /var/log/glite
+%dir /var/cache/glite
 %dir /usr/share/doc/glite-info-update-endpoints
 %config(noreplace) /etc/glite/glite-info-update-endpoints.conf
 /usr/bin/glite-info-update-endpoints
 /etc/cron.hourly/glite-info-update-endpoints
 /var/cache/glite/glite-info-update-endpoints
-%{python_sitelib}
+%{python3_sitelib}/glite_info_update_endpoints/
+%{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
 %doc /usr/share/doc/glite-info-update-endpoints/README.md
 %doc /usr/share/doc/glite-info-update-endpoints/AUTHORS
 %doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
 %doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
-%changelog
 
+%changelog
 * Tue Nov 27 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.1-1
 - Make manual_file optional in the conf (Bruce Becker)
 
