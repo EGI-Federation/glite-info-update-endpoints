@@ -52,5 +52,6 @@ clean:
 	rm -f *~ $(NAME)-$(VERSION).src.tgz
 	rm -rf $(build)
 	rm -rf glite_info_update_endpoints.egg-info
+	rm -rf dist
 
 .PHONY: dist srpm rpm sources clean
