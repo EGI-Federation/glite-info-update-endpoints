@@ -101,6 +101,7 @@ def get_url_data(url, capath, cafile):
     # is no longer possible to download HTTPS data without having server
     # CA certificate in trusted store or explicitely disable verification.
     if hasattr(ssl, 'create_default_context'):
+        # pylint: disable=protected-access
         if capath is not None or cafile is not None:
             context = ssl.create_default_context(cafile=cafile, capath=capath)
         else:
