@@ -4,7 +4,7 @@
 %endif
 
 Name:          glite-info-update-endpoints
-Version:       3.0.2
+Version:       3.0.3
 Release:       1%{?dist}
 Summary:       Updates LDAP endpoints for EGI
 Group:         Development/Libraries
@@ -62,6 +62,9 @@ rm -rf %{buildroot}
 %doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
 %changelog
+* Wed Nov 11 2020 Fernandez <enol.fernandez@egi.eu> - 3.0.3-1
+- Python 3 support (Enol Fernández)
+- Support CentOS 8 (Enol Fernández)
 
 * Wed Sep 23 2020 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.2-1
 - Fix manual_file configuration (Baptiste Grenier)
