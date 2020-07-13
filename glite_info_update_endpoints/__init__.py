@@ -107,16 +107,14 @@ def get_url_data(url, capath, cafile):
         try:
             return urllib.request.urlopen(url, context=context).read()
         except urllib.error.URLError as error:
-            LOG.warning("unable to get GOCDB Production %s sites: %s", status,
-                        str(error))
+            LOG.warning("Error getting info from GOCDB: %s", str(error))
             return None
     else:
         try:
             # Older python versions doesn't really verify server certificate
             return urllib.request.urlopen(url).read()
         except IOError as error:
-            LOG.warning("unable to get GOCDB Production %s sites: %s", status,
-                        str(error))
+            LOG.warning("Error getting info from GOCDB: %s", str(error))
             return None
 
 
@@ -132,6 +130,7 @@ def get_egi_urls(status, capath, cafile):
                    "&production_status=Production") % status
     response = get_url_data(egi_goc_url, capath, cafile)
     if not response:
+        LOG.warning("unable to get GOCDB Production %s sites", status)
         return None
     root = ElementTree.XML(response)
     egi_urls = {}
