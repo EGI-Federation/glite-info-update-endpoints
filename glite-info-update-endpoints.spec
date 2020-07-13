@@ -1,3 +1,8 @@
+%if 0%{?el8}
+%global __python %{__python3}
+%global python_version_prefix 3
+%endif
+
 Name:          glite-info-update-endpoints
 Version:       3.0.2
 Release:       1%{?dist}
@@ -10,9 +15,10 @@ BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: rsync
 BuildRequires: make
-BuildRequires: python-setuptools
-Requires:      python-setuptools
-Requires:      python-six
+BuildRequires: python%{?python_version_prefix}
+BuildRequires: python%{?python_version_prefix}-setuptools
+Requires:      python%{?python_version_prefix}-setuptools
+Requires:      python%{?python_version_prefix}-six
 %if 0%{?el6}
 Requires:      python-argparse
 %endif
@@ -28,7 +34,7 @@ Updates LDAP endpoints for EGI
 
 %install
 rm -rf %{buildroot}
-make install prefix=%{buildroot}
+make install python=python%{?python_version_prefix} prefix=%{buildroot}
 
 %post
 if [ ! -f /var/cache/glite/top-urls.conf ]; then
@@ -40,9 +46,9 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir /etc/glite/
-%dir /var/log/glite/
-%dir /var/cache/glite/
+%dir /etc/glite
+%dir /var/log/glite
+%dir /var/cache/glite
 %dir /usr/share/doc/glite-info-update-endpoints
 %config(noreplace) /etc/glite/glite-info-update-endpoints.conf
 /usr/bin/glite-info-update-endpoints
