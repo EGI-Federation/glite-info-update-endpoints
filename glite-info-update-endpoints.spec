@@ -12,6 +12,10 @@ BuildRequires: rsync
 BuildRequires: make
 BuildRequires: python-setuptools
 Requires:      python-setuptools
+Requires:      python-six
+%if 0%{?el6}
+Requires:      python-argparse
+%endif
 
 %description
 Updates LDAP endpoints for EGI
