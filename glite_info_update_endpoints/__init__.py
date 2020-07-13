@@ -17,12 +17,12 @@ import argparse
 import logging
 import os
 import pickle
+import ssl
 import sys
 import time
 
 from six.moves import configparser
-from six.moves.urllib import error
-from six.moves.urllib import request
+from six.moves import urllib
 
 try:
     from xml.etree import ElementTree
@@ -106,10 +106,20 @@ def get_url_data(url, capath, cafile):
             context = ssl.create_default_context(cafile=cafile, capath=capath)
         else:
             context = ssl._create_unverified_context()
-        return urllib2.urlopen(url, context=context).read()
+        try:
+            return urllib.request.urlopen(url, context=context).read()
+        except urllib.error.URLError as error:
+            LOG.warning("unable to get GOCDB Production %s sites: %s", status,
+                        str(error))
+            return None
     else:
-        # older python versions doesn't really verify server certificate
-        return urllib2.urlopen(url).read()
+        try:
+            # Older python versions doesn't really verify server certificate
+            return urllib.request.urlopen(url).read()
+        except IOError as error:
+            LOG.warning("unable to get GOCDB Production %s sites: %s", status,
+                        str(error))
+            return None
 
 
 def get_egi_urls(status, capath, cafile):
@@ -122,14 +132,10 @@ def get_egi_urls(status, capath, cafile):
     egi_goc_url = ("https://goc.egi.eu/gocdbpi/public/"
                    "?method=get_site_list&certification_status=%s"
                    "&production_status=Production") % status
-    try:
-        response = get_url_data(egi_goc_url, capath, cafile)
-    except urlerror.URLError as error:
-        LOG.warning("unable to get GOCDB Production %s sites: %s", status,
-                    str(error))
+    response = get_url_data(egi_goc_url, capath, cafile)
+    if not response:
         return None
-
-    root = ElementTree.XML(response.text)
+    root = ElementTree.XML(response)
     egi_urls = {}
     for node in root:
         if not node.attrib['ROC'] in egi_urls.keys():
