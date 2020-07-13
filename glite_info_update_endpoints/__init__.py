@@ -95,6 +95,7 @@ def read_config(config_file):
 
 
 def get_url_data(url, capath, cafile):
+    """Retrieve the content of a resource at a specific URL"""
     # python urllib2 introduced server certificate validation starting
     # with version 2.7.9 and 3.4 (backported also e.g. to CentOS7). It
     # is no longer possible to download HTTPS data without having server
@@ -107,14 +108,14 @@ def get_url_data(url, capath, cafile):
         try:
             return urllib.request.urlopen(url, context=context).read()
         except urllib.error.URLError as error:
-            LOG.warning("Error getting info from GOCDB: %s", str(error))
+            LOG.warning("Error getting info: %s", str(error))
             return None
     else:
         try:
             # Older python versions doesn't really verify server certificate
             return urllib.request.urlopen(url).read()
         except IOError as error:
-            LOG.warning("Error getting info from GOCDB: %s", str(error))
+            LOG.warning("Error getting info: %s", str(error))
             return None
 
 
