@@ -41,10 +41,11 @@ script:
   - docker exec -i -w /tmp/build/RPMS/noarch build_container bash -c "yum localinstall -y glite-info-update-endpoints*.el${OS_MAJOR_VERSION}.noarch.rpm"
   # check binary works
   # first install CAs
-  - docker exec -i build_container -c "curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo"
-  - docker exec -i build_container -c "yum install -y ca-policy-egi-core"
+  - docker exec -i build_container bash -c "curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo"
+  - docker exec -i build_container yum install -y ca-policy-egi-core
+  # then test
   - docker exec -i build_container bash -c "echo 'capath = /etc/grid-security/certificates' >> /etc/glite/glite-info-update-endpoints.conf"
-  - docker exec -i build_container bash -c "glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf"
+  - docker exec -i build_container glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf
 deploy:
   provider: releases
   api_key:
