@@ -17,7 +17,7 @@ install:
 	@mkdir -p ${prefix}/var/cache/glite/glite-info-update-endpoints
 	@mkdir -p $(prefix)/usr/share/doc/glite-info-update-endpoints
 	@install -m 0644 etc/glite-info-update-endpoints.conf ${prefix}/etc/glite/
-	@install -m 0755 bin/glite-info-update-endpoints ${prefix}/usr/bin/
+	python setup.py install --root ${prefix}/
 	@install -m 0755 etc/cron.hourly/glite-info-update-endpoints ${prefix}/etc/cron.hourly/
 	@install -m 0644 README.md $(prefix)/usr/share/doc/glite-info-update-endpoints/
 	@install -m 0644 AUTHORS $(prefix)/usr/share/doc/glite-info-update-endpoints/
@@ -50,5 +50,7 @@ rpm: srpm
 clean:
 	rm -f *~ $(NAME)-$(VERSION).src.tgz
 	rm -rf $(build)
+	rm -rf glite_info_update_endpoints.egg-info
+	rm -rf dist
 
 .PHONY: dist srpm rpm sources clean
