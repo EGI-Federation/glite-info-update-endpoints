@@ -13,6 +13,8 @@ URL:            https://github.com/EGI-Foundation/glite-info-update-endpoints
 Source:         %{name}-%{version}.src.tgz
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+BuildRequires:  make
+BuildRequires:  rsync
 BuildRequires:  python%{?python_version_prefix}
 BuildRequires:  python%{?python_version_prefix}-setuptools
 Requires:       python%{?python_version_prefix}-setuptools
@@ -82,7 +84,7 @@ rm -rf %{buildroot}
 - Added Source URL information
 
 * Wed Nov 21 2012 Maria Alandes <maria.alandes.pradillo@cern.ch> - 2.0.12-1
-- BUG #98983: Improve error handling in glite-info-update-endpoints 
+- BUG #98983: Improve error handling in glite-info-update-endpoints
 
 * Tue Sep 11 2012 Maria Alandes <maria.alandes.pradillo@cern.ch> - 2.0.11-1
 - BUG #96484: Fixed post install actions
@@ -92,7 +94,7 @@ rm -rf %{buildroot}
 - Changed the location of top-urls.conf to address GGUS #73823
 
 * Thu Apr 19 2012 Laurence Field <laurence.field@cern.ch> - 2.0.9-1
-- Added random sleep to cronjob to address GGUS #81404 
+- Added random sleep to cronjob to address GGUS #81404
 
 * Mon Mar 28 2011 Laurence Field <laurence.field@cern.ch> - 2.0.8-1
 - Addressed IS-228
