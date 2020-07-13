@@ -20,9 +20,9 @@ import pickle
 import sys
 import time
 
-import requests
-
 from six.moves import configparser
+from six.moves.urllib import error
+from six.moves.urllib import request
 
 try:
     from xml.etree import ElementTree
@@ -94,6 +94,24 @@ def read_config(config_file):
     return config
 
 
+def get_url_data(url, capath, cafile):
+    # python urllib2 introduced server certificate validation starting
+    # with version 2.7.9 and 3.4 (backported also e.g. to CentOS7). It
+    # is no longer possible to download HTTPS data without having server
+    # CA certificate in trusted store or explicitely disable verification.
+    if hasattr(ssl, 'create_default_context'):
+        capath = config.get('capath')
+        cafile = config.get('cafile')
+        if capath is not None or cafile is not None:
+            context = ssl.create_default_context(cafile=cafile, capath=capath)
+        else:
+            context = ssl._create_unverified_context()
+        return urllib2.urlopen(url, context=context).read()
+    else:
+        # older python versions doesn't really verify server certificate
+        return urllib2.urlopen(url).read()
+
+
 def get_egi_urls(status, capath, cafile):
     """Retrieve production sites from GOCDB"""
     if status not in ["Candidate", "Uncertified", "Certified",
@@ -105,15 +123,10 @@ def get_egi_urls(status, capath, cafile):
                    "?method=get_site_list&certification_status=%s"
                    "&production_status=Production") % status
     try:
-        verify = True
-        if capath:
-            verify = capath
-        elif cafile:
-            verify = cafile
-        response = requests.get(egi_goc_url, verify=verify)
-    except requests.exceptions.RequestException as error:
-        LOG.error("unable to get GOCDB Production %s sites: %s", status,
-                  str(error))
+        response = get_url_data(egi_goc_url, capath, cafile)
+    except urlerror.URLError as error:
+        LOG.warning("unable to get GOCDB Production %s sites: %s", status,
+                    str(error))
         return None
 
     root = ElementTree.XML(response.text)

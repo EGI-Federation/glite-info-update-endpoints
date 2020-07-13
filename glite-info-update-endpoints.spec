@@ -16,7 +16,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python%{?python_version_prefix}
 BuildRequires:  python%{?python_version_prefix}-setuptools
 Requires:       python%{?python_version_prefix}-setuptools
-Requires:       python%{?python_version_prefix}-requests
 Requires:       python%{?python_version_prefix}-six
 %if 0%{?el6}
 Requires:       python-argparse
