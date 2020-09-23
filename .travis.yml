@@ -39,8 +39,8 @@ script:
   - docker exec -i -w /tmp/build/RPMS/noarch build_container bash -c "rpm -Uvh glite-info-update-endpoints*.el${OS_MAJOR_VERSION}.noarch.rpm"
 deploy:
   provider: releases
-  api_key:
-    secure: aa7woLamSN4Tmhg36Opm1E9FXm+aT+0smJpgjRefFzLcJ2Kc/9XjuyCvI1Sux3BgQNgQcw/ptf8Zc0+JKc3uxZETKxTELJGalK6qU6aNyZatwxEI6UFBRFb0NHMbWhfrVaapywaLoGw3DRo/FWB6LIJDuzWjQmCAUfiEFRBQhslRUcW1Z94VptHDR4+Er4KhbSm4o6Kq2QPN1Y7yFaE+Sn+ey4NpREdbHFxznXAI+E/7Vdxu9VtT/80iwGvZHeTXu6q6X7dECQ46qIhYZgTgBt9MhYF7mO5d+NjQ707ekAgKrlAWPigcX47DKwp5Rl7n4dtfFHjott+VKNKPEDqqtXAxKyBX7sKW0jDMpaQn9taWllos9Il1VwOh2lE1wifN77NsBpNyz5q6nzVmHRLHBeLpOmlYrUn0zsUla532wqXqMjOMeF/oieqQNaVct1T1Bo5zk6nZASti/wnILmgZ9C05wlp0ZZB5d9mBGMPUOgbBuNI3xz3bmsJezQlcAvoezJ6X+8lWFavkPFRy2l0mpj6eDshBfcFde1xNcselnbqReIZVAHtd48fbBO7Blx6hpOlowZYxAbwEkYn0jYTPXVByzIjKlz9gZkH927z7f+uySYawq9CllyU/q4DsNASkcY8DyiY71/TPkTBQBBjUo56xSSoVqzQhmViyDdohi/Y=
+  # Set in the settings page of the repository, as an environment variable
+  api_key: $GITHUB_TOKEN
   file_glob: true
   file:
     - build/RPMS/noarch/glite-info-update-endpoints*.el${OS_MAJOR_VERSION}.noarch.rpm
