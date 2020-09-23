@@ -42,6 +42,15 @@ This procedure is not recommended for production deployment, please consider usi
 
 Get the source by cloning this repo and do a `make install`.
 
+## Preparing a release
+
+- Prepare a changelog from the last version, including contributors' names
+- Prepare a PR with
+  - Updating version and changelog in `glite-info-update-endpoints.spec`
+  - Updating authors in `AUTHORS`
+- Once the PR has been merged tag and release a new version in GitHub
+  - Packages will be built using Travis and attached to the release page
+
 ## History
 
 This work started under the EGEE project, and was hosted and maintained for a long time by CERN.

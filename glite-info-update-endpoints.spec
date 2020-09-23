@@ -1,7 +1,7 @@
 Name:		glite-info-update-endpoints
-Version:	3.0.1
+Version:	3.0.2
 Release:	1%{?dist}
-Summary:	Updates LDAP endpoins for EGI
+Summary:	Updates LDAP endpoints for EGI
 Group:		Development/Libraries
 License:	ASL 2.0
 URL:		https://github.com/EGI-Foundation/glite-info-update-endpoints
@@ -10,7 +10,7 @@ BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 
 %description
-Updates LDAP endpoins for EGI
+Updates LDAP endpoints for EGI
 
 %prep
 %setup -q
@@ -46,6 +46,10 @@ rm -rf %{buildroot}
 %doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
 %changelog
+
+* Wed Sep 23 2020 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.2-1
+- Fix manual_file configuration (Baptiste Grenier)
+- Enforce pylint and address issues (Baptiste Grenier, Enol Fernández, Andrea Manzi)
 
 * Tue Nov 27 2018 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.1-1
 - Make manual_file optional in the conf (Bruce Becker)
