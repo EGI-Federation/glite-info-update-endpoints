@@ -11,6 +11,7 @@ env:
   matrix:
     - OS_MAJOR_VERSION=6
     - OS_MAJOR_VERSION=7
+    - OS_MAJOR_VERSION=8
 before_install:
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -27,16 +28,24 @@ script:
   # First syntax, linting and pre-test stages
   - mdl -s relaxed README.md
   - rpmlint glite-info-update-endpoints.spec
-  - flake8 bin/glite-info-update-endpoints
-  - pylint bin/glite-info-update-endpoints
+  - flake8 glite_info_update_endpoints/
+  - pylint glite_info_update_endpoints/
   # Then, start the build container
   - docker run --name build_container -d -ti -v $PWD:/tmp -w /tmp $OS_NAME:$OS_MAJOR_VERSION /bin/bash -c 'while true ; do sleep 1000 ; done'
   # Now, install prerequisites for the build
-  - docker exec -i -w /root build_container yum install -y rpm-build make rsync
+  - docker exec -i -w /root build_container yum install -y rpm-build yum-utils
   # Eventually build the rpm
+  - docker exec -i -w /tmp build_container yum-builddep -y glite-info-update-endpoints.spec
   - docker exec -i -w /tmp build_container make rpm
   # and install it
-  - docker exec -i -w /tmp/build/RPMS/noarch build_container bash -c "rpm -Uvh glite-info-update-endpoints*.el${OS_MAJOR_VERSION}.noarch.rpm"
+  - docker exec -i -w /tmp/build/RPMS/noarch build_container bash -c "yum localinstall -y glite-info-update-endpoints*.el${OS_MAJOR_VERSION}.noarch.rpm"
+  # check binary works
+  # first install CAs
+  - docker exec -i build_container bash -c "curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo"
+  - docker exec -i build_container yum install -y ca-policy-egi-core
+  # then test
+  - docker exec -i build_container bash -c "echo 'capath = /etc/grid-security/certificates' >> /etc/glite/glite-info-update-endpoints.conf"
+  - docker exec -i build_container glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf
 deploy:
   provider: releases
   # Set in the settings page of the repository, as an environment variable

@@ -1,13 +1,27 @@
-Name:		glite-info-update-endpoints
-Version:	3.0.2
-Release:	1%{?dist}
-Summary:	Updates LDAP endpoints for EGI
-Group:		Development/Libraries
-License:	ASL 2.0
-URL:		https://github.com/EGI-Foundation/glite-info-update-endpoints
-Source:		%{name}-%{version}.src.tgz
-BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-build
+%if 0%{?el8}
+%global __python %{__python3}
+%global python_version_prefix 3
+%endif
+
+Name:          glite-info-update-endpoints
+Version:       3.0.3
+Release:       1%{?dist}
+Summary:       Updates LDAP endpoints for EGI
+Group:         Development/Libraries
+License:       ASL 2.0
+URL:           https://github.com/EGI-Foundation/glite-info-update-endpoints
+Source:        %{name}-%{version}.src.tgz
+BuildArch:     noarch
+BuildRoot:     %{_tmppath}/%{name}-%{version}-build
+BuildRequires: rsync
+BuildRequires: make
+BuildRequires: python%{?python_version_prefix}
+BuildRequires: python%{?python_version_prefix}-setuptools
+Requires:      python%{?python_version_prefix}-setuptools
+Requires:      python%{?python_version_prefix}-six
+%if 0%{?el6}
+Requires:      python-argparse
+%endif
 
 %description
 Updates LDAP endpoints for EGI
@@ -20,7 +34,7 @@ Updates LDAP endpoints for EGI
 
 %install
 rm -rf %{buildroot}
-make install prefix=%{buildroot}
+make install python=python%{?python_version_prefix} prefix=%{buildroot}
 
 %post
 if [ ! -f /var/cache/glite/top-urls.conf ]; then
@@ -32,20 +46,25 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir /etc/glite/
-%dir /var/log/glite/
-%dir /var/cache/glite/
+%dir /etc/glite
+%dir /var/log/glite
+%dir /var/cache/glite
 %dir /usr/share/doc/glite-info-update-endpoints
 %config(noreplace) /etc/glite/glite-info-update-endpoints.conf
 /usr/bin/glite-info-update-endpoints
 /etc/cron.hourly/glite-info-update-endpoints
 /var/cache/glite/glite-info-update-endpoints
+%{python_sitelib}/glite_info_update_endpoints/
+%{python_sitelib}/glite_info_update_endpoints-*.egg-info/
 %doc /usr/share/doc/glite-info-update-endpoints/README.md
 %doc /usr/share/doc/glite-info-update-endpoints/AUTHORS
 %doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
 %doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
 %changelog
+* Wed Nov 11 2020 Fernandez <enol.fernandez@egi.eu> - 3.0.3-1
+- Python 3 support (Enol Fernández)
+- Support CentOS 8 (Enol Fernández)
 
 * Wed Sep 23 2020 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.2-1
 - Fix manual_file configuration (Baptiste Grenier)
@@ -71,7 +90,7 @@ rm -rf %{buildroot}
 - Added Source URL information
 
 * Wed Nov 21 2012 Maria Alandes <maria.alandes.pradillo@cern.ch> - 2.0.12-1
-- BUG #98983: Improve error handling in glite-info-update-endpoints 
+- BUG #98983: Improve error handling in glite-info-update-endpoints
 
 * Tue Sep 11 2012 Maria Alandes <maria.alandes.pradillo@cern.ch> - 2.0.11-1
 - BUG #96484: Fixed post install actions
@@ -81,7 +100,7 @@ rm -rf %{buildroot}
 - Changed the location of top-urls.conf to address GGUS #73823
 
 * Thu Apr 19 2012 Laurence Field <laurence.field@cern.ch> - 2.0.9-1
-- Added random sleep to cronjob to address GGUS #81404 
+- Added random sleep to cronjob to address GGUS #81404
 
 * Mon Mar 28 2011 Laurence Field <laurence.field@cern.ch> - 2.0.8-1
 - Addressed IS-228
