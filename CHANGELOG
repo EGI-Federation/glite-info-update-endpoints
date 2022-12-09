@@ -1,0 +1,18 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+- Quality control using GitHub actions, update community files (#) (Baptiste Grenier)
+- Migrate to Python 3 (#28) (Enol Fernandez)
+
+## [3.0.2]
+- Fix manual_file configuration (#24) (Baptiste Grenier
+- Enforce pylint and address issues (#26) (Baptiste Grenier, Enol Fernández, Andrea Manzi)
+
+## [3.0.1]
+- Make manual_file optional in the conf (#19) (Bruce Becker)
