@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 This component is used with Top BDII and is intented to update LDAP endpoits
 for EGI.
