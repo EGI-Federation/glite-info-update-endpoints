@@ -46,6 +46,7 @@ rm -rf %{buildroot}
 /etc/cron.hourly/glite-info-update-endpoints
 /var/cache/glite/glite-info-update-endpoints
 %{python3_sitelib}/glite_info_update_endpoints/
+%attr(0755,root,root) %{python3_sitelib}/glite_info_update_endpoints/
 %{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
 %doc /usr/share/doc/glite-info-update-endpoints/README.md
 %doc /usr/share/doc/glite-info-update-endpoints/AUTHORS.md
