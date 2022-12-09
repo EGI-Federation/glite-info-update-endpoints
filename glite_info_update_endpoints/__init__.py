@@ -21,13 +21,10 @@ import ssl
 import sys
 import time
 
-from six.moves import configparser
-from six.moves import urllib
+import configparser
+import urllib
 
-try:
-    from xml.etree import ElementTree
-except ImportError:
-    from elementtree import ElementTree
+from xml.etree import ElementTree
 
 LOG = logging.getLogger()
 
