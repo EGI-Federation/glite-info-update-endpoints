@@ -10,7 +10,7 @@ Summary:       Updates LDAP endpoints for EGI
 Group:         Development/Libraries
 License:       ASL 2.0
 URL:           https://github.com/EGI-Foundation/glite-info-update-endpoints
-Source:        %{name}-%{version}.src.tgz
+Source:        %{name}-%{version}.tar.gz
 BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: rsync
@@ -30,7 +30,6 @@ Updates LDAP endpoints for EGI
 %setup -q
 
 %build
-# Nothing to build
 
 %install
 rm -rf %{buildroot}
