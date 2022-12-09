@@ -19,7 +19,7 @@ jobs:
           yum-builddep -y glite-info-update-endpoints.spec
       - name: build rpm
         run: |
-          make rpm
+          make clean rpm
           rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el7.noarch.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
@@ -42,7 +42,7 @@ jobs:
           yum-builddep -y glite-info-update-endpoints.spec
       - name: build rpm
         run: |
-          make rpm
+          make clean rpm
           rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el8.noarch.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
@@ -65,7 +65,7 @@ jobs:
           yum-builddep -y glite-info-update-endpoints.spec
       - name: build rpm
         run: |
-          make rpm
+          make clean rpm
           rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el9.noarch.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
