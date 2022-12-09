@@ -15,7 +15,8 @@ jobs:
           fetch-depth: 0
       - name: Install build requisites
         run: |
-          yum install -y rpm-build rpmlint make rsync
+          yum install -y rpm-build yum-utils
+          yum-builddep -y glite-info-update-endpoints.spec
       - name: build rpm
         run: |
           make rpm
@@ -37,7 +38,8 @@ jobs:
           fetch-depth: 0
       - name: Install build requisites
         run: |
-          yum install -y rpm-build rpmlint make rsync
+          yum install -y rpm-build yum-utils
+          yum-builddep -y glite-info-update-endpoints.spec
       - name: build rpm
         run: |
           make rpm
@@ -59,7 +61,8 @@ jobs:
           fetch-depth: 0
       - name: Install build requisites
         run: |
-          yum install -y rpm-build rpmlint make rsync
+          yum install -y rpm-build yum-utils
+          yum-builddep -y glite-info-update-endpoints.spec
       - name: build rpm
         run: |
           make rpm
