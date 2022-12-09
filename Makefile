@@ -17,11 +17,11 @@ install:
 	@mkdir -p $(prefix)/var/log/glite
 	@mkdir -p $(prefix)/var/cache/glite/glite-info-update-endpoints
 	@mkdir -p $(prefix)/usr/share/doc/glite-info-update-endpoints
-	$(python( setup.py install --root $(prefix)/
+	$(python) setup.py install --root $(prefix)/
 	@install -m 0644 etc/glite-info-update-endpoints.conf $(prefix)/etc/glite/
 	@install -m 0755 etc/cron.hourly/glite-info-update-endpoints $(prefix)/etc/cron.hourly/
 	@install -m 0644 README.md $(prefix)/usr/share/doc/glite-info-update-endpoints/
-	@install -m 0644 AUTHORS $(prefix)/usr/share/doc/glite-info-update-endpoints/
+	@install -m 0644 AUTHORS.md $(prefix)/usr/share/doc/glite-info-update-endpoints/
 	@install -m 0644 COPYRIGHT $(prefix)/usr/share/doc/glite-info-update-endpoints/
 	@install -m 0644 LICENSE.txt $(prefix)/usr/share/doc/glite-info-update-endpoints/
 
@@ -34,11 +34,11 @@ sources: dist
 	cp $(build)/$(NAME)-$(VERSION).tar.gz .
 
 prepare: dist
-	@mkdir -p  $(build)/RPMS/noarch
-	@mkdir -p  $(build)/SRPMS/
-	@mkdir -p  $(build)/SPECS/
-	@mkdir -p  $(build)/SOURCES/
-	@mkdir -p  $(build)/BUILD/
+	@mkdir -p $(build)/RPMS/noarch
+	@mkdir -p $(build)/SRPMS/
+	@mkdir -p $(build)/SPECS/
+	@mkdir -p $(build)/SOURCES/
+	@mkdir -p $(build)/BUILD/
 	cp $(build)/$(NAME)-$(VERSION).tar.gz $(build)/SOURCES
 	cp $(NAME).spec $(build)/SPECS
 
