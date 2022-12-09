@@ -14,7 +14,6 @@ BuildRequires: python3
 BuildRequires: python3-setuptools
 BuildRequires: python3-rpm-macros
 Requires:      python3-setuptools
-Requires:      python3-six
 
 %description
 Updates LDAP endpoints for EGI
