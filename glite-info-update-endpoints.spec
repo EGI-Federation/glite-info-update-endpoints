@@ -1,8 +1,3 @@
-%if 0%{?el8}
-%global __python %{__python3}
-%global python_version_prefix 3
-%endif
-
 Name:          glite-info-update-endpoints
 Version:       3.0.3
 Release:       1%{?dist}
@@ -15,13 +10,11 @@ BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: rsync
 BuildRequires: make
-BuildRequires: python%{?python_version_prefix}
-BuildRequires: python%{?python_version_prefix}-setuptools
-Requires:      python%{?python_version_prefix}-setuptools
-Requires:      python%{?python_version_prefix}-six
-%if 0%{?el6}
-Requires:      python-argparse
-%endif
+BuildRequires: python3
+BuildRequires: python3-setuptools
+BuildRequires: python3-rpm-macros
+Requires:      python3-setuptools
+Requires:      python3-six
 
 %description
 Updates LDAP endpoints for EGI
@@ -33,7 +26,7 @@ Updates LDAP endpoints for EGI
 
 %install
 rm -rf %{buildroot}
-make install python=python%{?python_version_prefix} prefix=%{buildroot}
+make install python=python3 prefix=%{buildroot}
 
 %post
 if [ ! -f /var/cache/glite/top-urls.conf ]; then
@@ -53,10 +46,10 @@ rm -rf %{buildroot}
 /usr/bin/glite-info-update-endpoints
 /etc/cron.hourly/glite-info-update-endpoints
 /var/cache/glite/glite-info-update-endpoints
-%{python_sitelib}/glite_info_update_endpoints/
-%{python_sitelib}/glite_info_update_endpoints-*.egg-info/
+%{python3_sitelib}/glite_info_update_endpoints/
+%{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
 %doc /usr/share/doc/glite-info-update-endpoints/README.md
-%doc /usr/share/doc/glite-info-update-endpoints/AUTHORS
+%doc /usr/share/doc/glite-info-update-endpoints/AUTHORS.md
 %doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
 %doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
 
