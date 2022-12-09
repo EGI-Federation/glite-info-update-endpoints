@@ -23,6 +23,8 @@ The required build dependencies are:
 - rpm-build
 - make
 - rsync
+- python3
+- python3-setuptools
 
 ```shell
 # Checkout tag to be packaged
@@ -31,8 +33,10 @@ cd glite-info-update-endpoints
 git checkout X.X.X
 # Building in a container
 docker run --rm -v $(pwd):/source -it quay.io/centos/centos:7
-yum install -y rpm-build make rsync
-cd /source && make rpm
+cd /source
+yum install -y rpm-build yum-utils
+yum-builddep -y glite-info-update-endpoints.spec
+make rpm
 ```
 
 The RPM will be available into the `build/RPMS` directory.
