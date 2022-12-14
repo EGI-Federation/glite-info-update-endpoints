@@ -13,7 +13,6 @@ BuildRequires: make
 BuildRequires: python3
 BuildRequires: python3-setuptools
 BuildRequires: python3-rpm-macros
-Requires:      python3-setuptools
 Requires:      crontabs
 
 %description
@@ -38,20 +37,20 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir /etc/glite
+%dir %{_sysconfdir}/glite
 %dir /var/log/glite
 %dir /var/cache/glite
-%dir /usr/share/doc/glite-info-update-endpoints
-%config(noreplace) /etc/glite/glite-info-update-endpoints.conf
-/usr/bin/glite-info-update-endpoints
-/etc/cron.hourly/glite-info-update-endpoints
-/var/cache/glite/glite-info-update-endpoints
+%dir %{_docdir}/%{name}
+%config(noreplace) %{_sysconfdir}/glite/glite-info-update-endpoints.conf
+%{_bindir}/%{name}
+%config(noreplace) %{_sysconfdir}/cron.hourly/%{name}
+/var/cache/glite/%{name}
 %{python3_sitelib}/glite_info_update_endpoints/
 %{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
-%doc /usr/share/doc/glite-info-update-endpoints/README.md
-%doc /usr/share/doc/glite-info-update-endpoints/AUTHORS.md
-%doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
-%doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
+%doc %{_docdir}/%{name}/README.md
+%doc %{_docdir}/%{name}/AUTHORS.md
+%doc %{_docdir}/%{name}/COPYRIGHT
+%doc %{_docdir}/%{name}/LICENSE.txt
 
 %changelog
 * Wed Nov 11 2020 Fernandez <enol.fernandez@egi.eu> - 3.0.3-1
