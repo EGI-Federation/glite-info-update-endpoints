@@ -43,7 +43,7 @@ rm -rf %{buildroot}
 %dir %{_docdir}/%{name}
 %config(noreplace) %{_sysconfdir}/glite/glite-info-update-endpoints.conf
 %{_bindir}/%{name}
-%config(noreplace) %{_sysconfdir}/cron.hourly/%{name}
+%{_sysconfdir}/cron.hourly/%{name}
 /var/cache/glite/%{name}
 %{python3_sitelib}/glite_info_update_endpoints/
 %{python3_sitelib}/glite_info_update_endpoints-*.egg-info/

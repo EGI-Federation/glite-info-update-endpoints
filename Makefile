@@ -19,7 +19,7 @@ install:
 	@mkdir -p $(prefix)/usr/share/doc/glite-info-update-endpoints
 	$(python) setup.py install --root $(prefix)/
 	@install -m 0644 etc/glite-info-update-endpoints.conf $(prefix)/etc/glite/
-	@install -m 0750 etc/cron.hourly/glite-info-update-endpoints $(prefix)/etc/cron.hourly/
+	@install -m 0755 etc/cron.hourly/glite-info-update-endpoints $(prefix)/etc/cron.hourly/
 	@install -m 0644 README.md $(prefix)/usr/share/doc/glite-info-update-endpoints/
 	@install -m 0644 AUTHORS.md $(prefix)/usr/share/doc/glite-info-update-endpoints/
 	@install -m 0644 COPYRIGHT $(prefix)/usr/share/doc/glite-info-update-endpoints/
