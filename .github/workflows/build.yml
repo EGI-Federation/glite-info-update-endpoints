@@ -5,10 +5,13 @@ on:
   pull_request:
 
 jobs:
-  centos7:
-    name: Build CentOS 7 RPMs
+  build:
+    strategy:
+      matrix:
+        centos-version: [7, 8, 9]
+    name: Build CentOS ${{ matrix.centos-version }} RPMs
     runs-on: ubuntu-latest
-    container: quay.io/centos/centos:7
+    container: quay.io/centos/centos:${{ matrix.centos-version }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -20,95 +23,26 @@ jobs:
       - name: build rpm
         run: |
           make clean rpm
-          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el7.noarch.rpm
+          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el${{ matrix.centos-version }}.noarch.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
         with:
-          name: rpms7
+          name: rpms${{ matrix.centos-version }}
           path: |
-            build/RPMS/noarch/glite-info-update-endpoints-*-1.el7.noarch.rpm
+            build/RPMS/noarch/glite-info-update-endpoints-*-1.el${{ matrix.centos-version }}.noarch.rpm
 
-  centos8:
-    name: Build CentOS Stream 8 RPMs
+  install:
+    strategy:
+      matrix:
+        centos-version: [7, 8, 9]
+    name: Install CentOS ${{ matrix.centos-version }} RPMs
+    needs: build
     runs-on: ubuntu-latest
-    container: quay.io/centos/centos:stream8
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Install build requisites
-        run: |
-          yum install -y rpm-build yum-utils rpmlint
-          yum-builddep -y glite-info-update-endpoints.spec
-      - name: build rpm
-        run: |
-          make clean rpm
-          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el8.noarch.rpm
-      - name: Upload RPMs
-        uses: actions/upload-artifact@v3
-        with:
-          name: rpms8
-          path: |
-            build/RPMS/noarch/glite-info-update-endpoints-*-1.el8.noarch.rpm
-
-  centos9:
-    name: Build CentOS Stream 9 RPMs
-    runs-on: ubuntu-latest
-    container: quay.io/centos/centos:stream9
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Install build requisites
-        run: |
-          yum install -y rpm-build yum-utils rpmlint
-          yum-builddep -y glite-info-update-endpoints.spec
-      - name: build rpm
-        run: |
-          make clean rpm
-          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el9.noarch.rpm
-      - name: Upload RPMs
-        uses: actions/upload-artifact@v3
-        with:
-          name: rpms9
-          path: |
-            build/RPMS/noarch/glite-info-update-endpoints-*-1.el9.noarch.rpm
-
-  centos7-install:
-    name: Install CentOS 7 RPMs
-    needs: centos7
-    runs-on: ubuntu-latest
-    container: quay.io/centos/centos:7
+    container: quay.io/centos/centos:${{ matrix.centos-version }}
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: rpms7
+          name: rpms${{ matrix.centos-version }}
       - name: Install generated RPMs
         run: |
-          yum localinstall -y glite-info-update-endpoints-*.el7.noarch.rpm
-
-  centos8-install:
-    name: Install CentOS Stream 8 RPMs
-    needs: centos8
-    runs-on: ubuntu-latest
-    container: quay.io/centos/centos:stream8
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: rpms8
-      - name: Install generated RPMs
-        run: |
-          yum localinstall -y glite-info-update-endpoints-*.el8.noarch.rpm
-
-  centos9-install:
-    name: Install CentOS Stream 9 RPMs
-    needs: centos9
-    runs-on: ubuntu-latest
-    container: quay.io/centos/centos:stream9
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: rpms9
-      - name: Install generated RPMs
-        run: |
-          yum localinstall -y glite-info-update-endpoints-*.el9.noarch.rpm
+          yum localinstall -y glite-info-update-endpoints-*.el${{ matrix.centos-version }}.noarch.rpm
