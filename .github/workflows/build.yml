@@ -42,7 +42,7 @@ jobs:
           yum localinstall -y glite-info-update-endpoints-*.el7.noarch.rpm
       - name: Test installed RPMs
         run: |
-          curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo
+          curl https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo
           yum install -y ca-policy-egi-core
           echo 'capath = /etc/grid-security/certificates' >> /etc/glite/glite-info-update-endpoints.conf
           glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf
@@ -90,7 +90,7 @@ jobs:
           yum localinstall -y glite-info-update-endpoints-*.el${{ matrix.centos-version }}.noarch.rpm
       - name: Test installed RPMs
         run: |
-          curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo
+          curl https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo
           yum install -y ca-policy-egi-core
           echo 'capath = /etc/grid-security/certificates' >> /etc/glite/glite-info-update-endpoints.conf
           glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf
