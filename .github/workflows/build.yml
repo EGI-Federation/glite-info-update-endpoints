@@ -5,13 +5,50 @@ on:
   pull_request:
 
 jobs:
+  # XXX done outside of the matrix due to different container name
+  build-centos7:
+    name: Build CentOS 7 RPMs
+    runs-on: ubuntu-latest
+    container: quay.io/centos/centos:7
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install build requisites
+        run: |
+          yum install -y rpm-build yum-utils rpmlint
+          yum-builddep -y glite-info-update-endpoints.spec
+      - name: build rpm
+        run: |
+          make clean rpm
+          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el7.noarch.rpm
+      - name: Upload RPMs
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpms7
+          path: |
+            build/RPMS/noarch/glite-info-update-endpoints-*-1.el7.noarch.rpm
+  install-centos7:
+    name: Install CentOS 7 RPMs
+    needs: build-centos7
+    runs-on: ubuntu-latest
+    container: quay.io/centos/centos:7
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: rpms7
+      - name: Install generated RPMs
+        run: |
+          yum localinstall -y glite-info-update-endpoints-*.el7.noarch.rpm
+
+  # Use a matrix for CentOS stream versions
   build:
     strategy:
       matrix:
-        centos-version: [7, 8, 9]
+        centos-version: [8, 9]
     name: Build CentOS ${{ matrix.centos-version }} RPMs
     runs-on: ubuntu-latest
-    container: quay.io/centos/centos:${{ matrix.centos-version }}
+    container: quay.io/centos/centos:stream${{ matrix.centos-version }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -30,15 +67,14 @@ jobs:
           name: rpms${{ matrix.centos-version }}
           path: |
             build/RPMS/noarch/glite-info-update-endpoints-*-1.el${{ matrix.centos-version }}.noarch.rpm
-
   install:
     strategy:
       matrix:
-        centos-version: [7, 8, 9]
+        centos-version: [8, 9]
     name: Install CentOS ${{ matrix.centos-version }} RPMs
     needs: build
     runs-on: ubuntu-latest
-    container: quay.io/centos/centos:${{ matrix.centos-version }}
+    container: quay.io/centos/centos:stream${{ matrix.centos-version }}
     steps:
       - uses: actions/download-artifact@v3
         with:
