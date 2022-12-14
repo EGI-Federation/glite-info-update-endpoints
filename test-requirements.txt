@@ -1,4 +1,0 @@
-pylint
-flake8
-flake8-import-order
-hacking
