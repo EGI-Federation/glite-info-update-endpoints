@@ -28,15 +28,15 @@ The required build dependencies are:
 
 ```shell
 # Checkout tag to be packaged
-git clone https://github.com/EGI-Foundation/glite-info-update-endpoints.git
-cd glite-info-update-endpoints
-git checkout X.X.X
+$ git clone https://github.com/EGI-Foundation/glite-info-update-endpoints.git
+$ cd glite-info-update-endpoints
+$ git checkout X.X.X
 # Building in a container
-docker run --rm -v $(pwd):/source -it quay.io/centos/centos:7
-cd /source
-yum install -y rpm-build yum-utils
-yum-builddep -y glite-info-update-endpoints.spec
-make rpm
+$ docker run --rm -v $(pwd):/source -it quay.io/centos/centos:7
+[root@8a9d60c61f42 /]# cd /source
+[root@8a9d60c61f42 /]# yum install -y rpm-build yum-utils
+[root@8a9d60c61f42 /]# yum-builddep -y glite-info-update-endpoints.spec
+[root@8a9d60c61f42 /]# make rpm
 ```
 
 The RPM will be available into the `build/RPMS` directory.
