@@ -41,17 +41,16 @@ rm -rf %{buildroot}
 %dir %{_sysconfdir}/glite
 %dir /var/log/glite
 %dir /var/cache/glite
-%dir %{_docdir}/%{name}
 %config(noreplace) %{_sysconfdir}/glite/glite-info-update-endpoints.conf
 %{_bindir}/%{name}
 %{_sysconfdir}/cron.hourly/%{name}
 /var/cache/glite/%{name}
 %{python3_sitelib}/glite_info_update_endpoints/
 %{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
-%doc %{_docdir}/%{name}/README.md
-%doc %{_docdir}/%{name}/AUTHORS.md
-%license %{_docdir}/%{name}/COPYRIGHT
-%license %{_docdir}/%{name}/LICENSE.txt
+%doc %{_docdir}/%{name}-%{version}/README.md
+%doc %{_docdir}/%{name}-%{version}/AUTHORS.md
+%license /usr/share/licenses/%{name}-%{version}/COPYRIGHT
+%license /usr/share/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
 * Thu Dec 15 2022 Baptiste Grenier <baptiste.grenier@egi.eu> - 4.0.0-1
