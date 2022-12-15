@@ -16,15 +16,15 @@ install:
 	@mkdir -p $(prefix)/usr/bin/
 	@mkdir -p $(prefix)/var/log/glite
 	@mkdir -p $(prefix)/var/cache/glite/$(NAME)
-	@mkdir -p $(prefix)/usr/share/doc/$(NAME)
-	@mkdir -p $(prefix)/usr/share/licenses/$(NAME)
+	@mkdir -p $(prefix)/usr/share/doc/$(NAME)-$(VERSION)
+	@mkdir -p $(prefix)/usr/share/licenses/$(NAME)-$(VERSION)
 	$(python) setup.py install --root $(prefix)/
 	@install -m 0644 etc/$(NAME).conf $(prefix)/etc/glite/
 	@install -m 0755 etc/cron.hourly/$(NAME) $(prefix)/etc/cron.hourly/
-	@install -m 0644 README.md $(prefix)/usr/share/doc/$(NAME)/
-	@install -m 0644 AUTHORS.md $(prefix)/usr/share/doc/$(NAME)/
-	@install -m 0644 COPYRIGHT $(prefix)/usr/share/licenses/$(NAME)/
-	@install -m 0644 LICENSE.txt $(prefix)/usr/share/licenses/$(NAME)/
+	@install -m 0644 README.md $(prefix)/usr/share/doc/$(NAME)-$(VERSION)/
+	@install -m 0644 AUTHORS.md $(prefix)/usr/share/doc/$(NAME)-$(VERSION)/
+	@install -m 0644 COPYRIGHT $(prefix)/usr/share/licenses/$(NAME)-$(VERSION)/
+	@install -m 0644 LICENSE.txt $(prefix)/usr/share/licenses/$(NAME)-$(VERSION)/
 
 dist:
 	@mkdir -p  $(build)/$(NAME)-$(VERSION)/
