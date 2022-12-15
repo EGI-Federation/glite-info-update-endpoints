@@ -54,7 +54,7 @@ rm -rf %{buildroot}
 %doc %{_docdir}/%{name}/LICENSE.txt
 
 %changelog
-* Thur Nov 15 2022 Baptiste Grenier <baptiste.grenier@egi.eu> - 4.0.0-1
+* Thur Dec 15 2022 Baptiste Grenier <baptiste.grenier@egi.eu> - 4.0.0-1
 - Quality control using GitHub actions, update community files (#33) (Baptiste Grenier)
 - Migrate to Python 3 (#28) (Enol Fernandez)
 
