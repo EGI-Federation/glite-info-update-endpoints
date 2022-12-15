@@ -50,8 +50,8 @@ rm -rf %{buildroot}
 %{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
 %doc %{_docdir}/%{name}/README.md
 %doc %{_docdir}/%{name}/AUTHORS.md
-%doc %{_docdir}/%{name}/COPYRIGHT
-%doc %{_docdir}/%{name}/LICENSE.txt
+%license %{_docdir}/%{name}/COPYRIGHT
+%license %{_docdir}/%{name}/LICENSE.txt
 
 %changelog
 * Thu Dec 15 2022 Baptiste Grenier <baptiste.grenier@egi.eu> - 4.0.0-1
