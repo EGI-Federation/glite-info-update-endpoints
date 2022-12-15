@@ -1,0 +1,21 @@
+# Authors
+
+## Maintainers
+
+- Andrea Manzi <andrea.manzi@egi.eu>
+- Enol Fernandez <enol.fernandez@egi.eu>
+- Baptiste Grenier <baptiste.grenier@egi.eu>
+
+## Original Authors
+
+- Laurence Field <Laurence.field@cern.ch>
+- Maria Alandes Pradillo <maria.alandes.pradillo@cern.ch>
+
+## Contributors
+
+- Petr Vokac <petr.vokac@fjfi.cvut.cz>
+- Bruce Becker <bruce.becker@egi.eu>
+- Enol Fernández <enol.fernandez@egi.eu>
+- Andrea Manzi <andrea.manzi@egi.eu>
+
+[GitHub contributors](https://github.com/EGI-Federation/glite-info-update-endpoints/graphs/contributors).

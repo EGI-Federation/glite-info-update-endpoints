@@ -1,8 +1,3 @@
-%if 0%{?el8}
-%global __python %{__python3}
-%global python_version_prefix 3
-%endif
-
 Name:          glite-info-update-endpoints
 Version:       3.0.3
 Release:       1%{?dist}
@@ -10,18 +5,15 @@ Summary:       Updates LDAP endpoints for EGI
 Group:         Development/Libraries
 License:       ASL 2.0
 URL:           https://github.com/EGI-Foundation/glite-info-update-endpoints
-Source:        %{name}-%{version}.src.tgz
+Source:        %{name}-%{version}.tar.gz
 BuildArch:     noarch
 BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: rsync
 BuildRequires: make
-BuildRequires: python%{?python_version_prefix}
-BuildRequires: python%{?python_version_prefix}-setuptools
-Requires:      python%{?python_version_prefix}-setuptools
-Requires:      python%{?python_version_prefix}-six
-%if 0%{?el6}
-Requires:      python-argparse
-%endif
+BuildRequires: python3
+BuildRequires: python3-setuptools
+BuildRequires: python3-rpm-macros
+Requires:      crontabs
 
 %description
 Updates LDAP endpoints for EGI
@@ -30,11 +22,10 @@ Updates LDAP endpoints for EGI
 %setup -q
 
 %build
-# Nothing to build
 
 %install
 rm -rf %{buildroot}
-make install python=python%{?python_version_prefix} prefix=%{buildroot}
+make install python=python3 prefix=%{buildroot}
 
 %post
 if [ ! -f /var/cache/glite/top-urls.conf ]; then
@@ -46,20 +37,20 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%dir /etc/glite
+%dir %{_sysconfdir}/glite
 %dir /var/log/glite
 %dir /var/cache/glite
-%dir /usr/share/doc/glite-info-update-endpoints
-%config(noreplace) /etc/glite/glite-info-update-endpoints.conf
-/usr/bin/glite-info-update-endpoints
-/etc/cron.hourly/glite-info-update-endpoints
-/var/cache/glite/glite-info-update-endpoints
-%{python_sitelib}/glite_info_update_endpoints/
-%{python_sitelib}/glite_info_update_endpoints-*.egg-info/
-%doc /usr/share/doc/glite-info-update-endpoints/README.md
-%doc /usr/share/doc/glite-info-update-endpoints/AUTHORS
-%doc /usr/share/doc/glite-info-update-endpoints/COPYRIGHT
-%doc /usr/share/doc/glite-info-update-endpoints/LICENSE.txt
+%dir %{_docdir}/%{name}
+%config(noreplace) %{_sysconfdir}/glite/glite-info-update-endpoints.conf
+%{_bindir}/%{name}
+%{_sysconfdir}/cron.hourly/%{name}
+/var/cache/glite/%{name}
+%{python3_sitelib}/glite_info_update_endpoints/
+%{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
+%doc %{_docdir}/%{name}/README.md
+%doc %{_docdir}/%{name}/AUTHORS.md
+%doc %{_docdir}/%{name}/COPYRIGHT
+%doc %{_docdir}/%{name}/LICENSE.txt
 
 %changelog
 * Wed Nov 11 2020 Fernandez <enol.fernandez@egi.eu> - 3.0.3-1

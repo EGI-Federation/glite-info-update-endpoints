@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 This component is used with Top BDII and is intented to update LDAP endpoits
 for EGI.
@@ -14,20 +12,16 @@ The list of site BDIIs is taken from the EGI GOCDBs.
 """
 
 import argparse
+import configparser
 import logging
 import os
 import pickle
 import ssl
 import sys
 import time
-
-from six.moves import configparser
-from six.moves import urllib
-
-try:
-    from xml.etree import ElementTree
-except ImportError:
-    from elementtree import ElementTree
+import urllib.request
+import urllib.error
+from xml.etree import ElementTree
 
 LOG = logging.getLogger()
 
