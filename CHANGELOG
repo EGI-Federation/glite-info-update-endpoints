@@ -7,7 +7,9 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- Quality control using GitHub actions, update community files (#) (Baptiste Grenier)
+
+## [4.0.0]
+- Quality control using GitHub actions, update community files (#33) (Baptiste Grenier)
 - Migrate to Python 3 (#28) (Enol Fernandez)
 
 ## [3.0.2]
