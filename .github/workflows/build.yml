@@ -47,7 +47,7 @@ jobs:
           echo 'capath = /etc/grid-security/certificates' >> /etc/glite/glite-info-update-endpoints.conf
           glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf
 
-  # Use a matrix for CentOS stream versions
+  # Use a matrix for CentOS Stream versions
   build:
     strategy:
       matrix:

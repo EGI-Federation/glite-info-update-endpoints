@@ -1,5 +1,5 @@
 Name:          glite-info-update-endpoints
-Version:       3.0.3
+Version:       4.0.0
 Release:       1%{?dist}
 Summary:       Updates LDAP endpoints for EGI
 Group:         Development/Libraries
@@ -14,6 +14,7 @@ BuildRequires: python3
 BuildRequires: python3-setuptools
 BuildRequires: python3-rpm-macros
 Requires:      crontabs
+Requires:      python3
 
 %description
 Updates LDAP endpoints for EGI
@@ -40,22 +41,21 @@ rm -rf %{buildroot}
 %dir %{_sysconfdir}/glite
 %dir /var/log/glite
 %dir /var/cache/glite
-%dir %{_docdir}/%{name}
 %config(noreplace) %{_sysconfdir}/glite/glite-info-update-endpoints.conf
 %{_bindir}/%{name}
 %{_sysconfdir}/cron.hourly/%{name}
 /var/cache/glite/%{name}
 %{python3_sitelib}/glite_info_update_endpoints/
 %{python3_sitelib}/glite_info_update_endpoints-*.egg-info/
-%doc %{_docdir}/%{name}/README.md
-%doc %{_docdir}/%{name}/AUTHORS.md
-%doc %{_docdir}/%{name}/COPYRIGHT
-%doc %{_docdir}/%{name}/LICENSE.txt
+%doc %{_docdir}/%{name}-%{version}/README.md
+%doc %{_docdir}/%{name}-%{version}/AUTHORS.md
+%license /usr/share/licenses/%{name}-%{version}/COPYRIGHT
+%license /usr/share/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
-* Wed Nov 11 2020 Fernandez <enol.fernandez@egi.eu> - 3.0.3-1
-- Python 3 support (Enol Fernández)
-- Support CentOS 8 (Enol Fernández)
+* Thu Dec 15 2022 Baptiste Grenier <baptiste.grenier@egi.eu> - 4.0.0-1
+- Quality control using GitHub actions, update community files (#33) (Baptiste Grenier)
+- Migrate to Python 3 (#28) (Enol Fernandez)
 
 * Wed Sep 23 2020 Baptiste Grenier <baptiste.grenier@egi.eu> - 3.0.2-1
 - Fix manual_file configuration (Baptiste Grenier)
