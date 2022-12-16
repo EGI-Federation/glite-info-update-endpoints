@@ -25,7 +25,6 @@ jobs:
       - name: build rpm
         run: |
           make clean rpm
-          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
         with:
@@ -49,7 +48,6 @@ jobs:
       - name: build rpm
         run: |
           make clean rpm
-          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
         with:
@@ -73,7 +71,6 @@ jobs:
       - name: build rpm
         run: |
           make clean rpm
-          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
         with:
