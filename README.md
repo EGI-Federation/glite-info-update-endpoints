@@ -46,7 +46,7 @@ The RPM will be available into the `build/RPMS` directory.
 This procedure is not recommended for production deployment, please consider
 using packages.
 
-Get the source by cloning this repo and do a `make install`.
+Get the source by cloning this repository and do a `make install`.
 
 ## Preparing a release
 
