@@ -12,6 +12,15 @@ The script uses the `/etc/glite/glite-info-update-endpoints.conf` file which by
 default is configured to use EGI's list of site BDIIs. The list of site BDIIs is
 taken from the EGI GOCDBs.
 
+## Installing from packages
+
+### On RHEL-based systems
+
+On RHEL-based systems, it's possible to install packages from [EGI UMD
+packages](https://go.egi.eu/umd). The packages are build from this repository,
+and tested to work with other components part of the Unified Middleware
+Distribution.
+
 ## Building packages
 
 A Makefile allowing to build source tarball and packages is provided.
@@ -52,10 +61,11 @@ Get the source by cloning this repository and do a `make install`.
 
 - Prepare a changelog from the last version, including contributors' names
 - Prepare a PR with
-  - Updating version and changelog in `glite-info-update-endpoints.spec`
-  - Updating authors in `AUTHORS`
+  - Updating version and changelog in
+    - [CHANGELOG](CHANGELOG)
+    - [glite-info-update-endpoints.spec](glite-info-update-endpoints.spec)
 - Once the PR has been merged tag and release a new version in GitHub
-  - Packages will be built using Travis and attached to the release page
+  - Packages will be built using GitHub Actions and attached to the release page
 
 ## History
 
