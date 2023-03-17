@@ -1,5 +1,5 @@
 Name:          glite-info-update-endpoints
-Version:       4.0.0
+Version:       4.0.1
 Release:       1%{?dist}
 Summary:       Updates LDAP endpoints for EGI
 Group:         Development/Libraries
@@ -53,6 +53,9 @@ rm -rf %{buildroot}
 %license /usr/share/licenses/%{name}-%{version}/LICENSE.txt
 
 %changelog
+* Fri Mar 17 2023 Baptiste Grenier <baptiste.grenier@egi.eu> - 4.0.1-1
+- Build using AlmaLinux 8 and 9 (#35) (Baptiste Grenier)
+
 * Thu Dec 15 2022 Baptiste Grenier <baptiste.grenier@egi.eu> - 4.0.0-1
 - Quality control using GitHub actions, update community files (#33) (Baptiste Grenier)
 - Migrate to Python 3 (#28) (Enol Fernandez)
