@@ -8,13 +8,31 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [4.0.1]
+
+### Changed
+
+- Build using AlmaLinux 8 and 9 (#35) (Baptiste Grenier)
+
 ## [4.0.0]
+
+### Added
+
 - Quality control using GitHub actions, update community files (#33) (Baptiste Grenier)
+
+### Changed
+
 - Migrate to Python 3 (#28) (Enol Fernandez)
 
 ## [3.0.2]
+
+### Fixed
+
 - Fix manual_file configuration (#24) (Baptiste Grenier
 - Enforce pylint and address issues (#26) (Baptiste Grenier, Enol Fernández, Andrea Manzi)
 
 ## [3.0.1]
+
+### Changed
+
 - Make manual_file optional in the conf (#19) (Bruce Becker)
