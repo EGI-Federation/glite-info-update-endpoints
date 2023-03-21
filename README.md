@@ -1,6 +1,6 @@
 # glite-info-update-endpoints
 
-This component is used with Top BDII and is intented to update LDAP endpoits for
+This component is used with Top BDII and is intended to update LDAP endpoints for
 EGI. BDII documentation is available at
 [gridinfo documentation site](https://gridinfo-documentation.readthedocs.io/).
 
@@ -10,16 +10,16 @@ publish their resources.
 
 The script uses the `/etc/glite/glite-info-update-endpoints.conf` file which by
 default is configured to use EGI's list of site BDIIs. The list of site BDIIs is
-taken from the EGI GOCDBs.
+taken from the
+[EGI Configuration Database (GOCDB)](https://docs.egi.eu/internal/configuration-database/).
 
 ## Installing from packages
 
 ### On RHEL-based systems
 
-On RHEL-based systems, it's possible to install packages from [EGI UMD
-packages](https://go.egi.eu/umd). The packages are build from this repository,
-and tested to work with other components part of the Unified Middleware
-Distribution.
+On RHEL-based systems, it's possible to install packages from
+ [EGI UMD packages](https://go.egi.eu/umd). The packages are build from this repository,
+and tested to work with other components part of the Unified Middleware Distribution.
 
 ## Building packages
 

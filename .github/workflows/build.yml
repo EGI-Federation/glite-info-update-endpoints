@@ -47,14 +47,14 @@ jobs:
           echo 'capath = /etc/grid-security/certificates' >> /etc/glite/glite-info-update-endpoints.conf
           glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf
 
-  # Use a matrix for CentOS Stream versions
+  # Use a matrix for AlmaLinux versions
   build:
     strategy:
       matrix:
-        centos-version: [8, 9]
-    name: Build CentOS ${{ matrix.centos-version }} RPMs
+        almalinux-version: [8, 9]
+    name: Build AlmaLinux ${{ matrix.almalinux-version }} RPMs
     runs-on: ubuntu-latest
-    container: quay.io/centos/centos:stream${{ matrix.centos-version }}
+    container: almalinux:${{ matrix.almalinux-version }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -66,28 +66,28 @@ jobs:
       - name: build rpm
         run: |
           make clean rpm
-          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el${{ matrix.centos-version }}.noarch.rpm
+          rpmlint --file .rpmlint.ini build/RPMS/noarch/*.el${{ matrix.almalinux-version }}.noarch.rpm
       - name: Upload RPMs
         uses: actions/upload-artifact@v3
         with:
-          name: rpms${{ matrix.centos-version }}
+          name: rpms${{ matrix.almalinux-version }}
           path: |
-            build/RPMS/noarch/glite-info-update-endpoints-*-1.el${{ matrix.centos-version }}.noarch.rpm
+            build/RPMS/noarch/glite-info-update-endpoints-*-1.el${{ matrix.almalinux-version }}.noarch.rpm
   install:
     strategy:
       matrix:
-        centos-version: [8, 9]
-    name: Install CentOS ${{ matrix.centos-version }} RPMs
+        almalinux-version: [8, 9]
+    name: Install AlmaLinux ${{ matrix.almalinux-version }} RPMs
     needs: build
     runs-on: ubuntu-latest
-    container: quay.io/centos/centos:stream${{ matrix.centos-version }}
+    container: almalinux:${{ matrix.almalinux-version }}
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: rpms${{ matrix.centos-version }}
+          name: rpms${{ matrix.almalinux-version }}
       - name: Install generated RPMs
         run: |
-          yum localinstall -y glite-info-update-endpoints-*.el${{ matrix.centos-version }}.noarch.rpm
+          yum localinstall -y glite-info-update-endpoints-*.el${{ matrix.almalinux-version }}.noarch.rpm
       - name: Test installed RPMs
         run: |
           curl https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo
