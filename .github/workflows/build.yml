@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     container: quay.io/centos/centos:7
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: rpms7
       - name: Install generated RPMs
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     container: almalinux:${{ matrix.almalinux-version }}
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: rpms${{ matrix.almalinux-version }}
       - name: Install generated RPMs

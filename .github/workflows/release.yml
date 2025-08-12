@@ -84,7 +84,7 @@ jobs:
     needs: centos7
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: rpms7
       - name: Find package name
@@ -109,7 +109,7 @@ jobs:
     needs: almalinux8
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: rpms8
       - name: Find package name
@@ -134,7 +134,7 @@ jobs:
     needs: almalinux9
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v5
         with:
           name: rpms9
       - name: Find package name
