@@ -48,7 +48,7 @@ jobs:
           yum localinstall -y glite-info-update-endpoints-*.el${{ matrix.almalinux-version }}.noarch.rpm
       - name: Test installed RPMs
         run: |
-          curl https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo
+          curl https://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-trustanchors.repo > /etc/yum.repos.d/EGI-trustanchors.repo
           yum install -y ca-policy-egi-core
           echo 'capath = /etc/grid-security/certificates' >> /etc/glite/glite-info-update-endpoints.conf
           glite-info-update-endpoints -v -c /etc/glite/glite-info-update-endpoints.conf
