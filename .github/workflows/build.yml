@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     container: almalinux:${{ matrix.almalinux-version }}
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v7
         with:
           name: rpms${{ matrix.almalinux-version }}
       - name: Install generated RPMs
